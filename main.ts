@@ -35,6 +35,20 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     	
     }
 })
+function animate_sprite (sprite: Sprite, _static: Image, static_condition: number, animation2: any[], animation_condition: number) {
+    characterAnimations.loopFrames(
+    sprite,
+    animation2,
+    100,
+    animation_condition
+    )
+    characterAnimations.runFrames(
+    sprite,
+    [_static],
+    0,
+    static_condition
+    )
+}
 controller.right.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
         move_right_in_inventory_toolbar()
@@ -56,7 +70,7 @@ function move_down_in_inventory_toolbar () {
 }
 function enable_movement (en: boolean) {
     if (en) {
-        controller.moveSprite(the_player)
+        controller.moveSprite(the_player, 80, 80)
     } else {
         controller.moveSprite(the_player, 0, 0)
     }
@@ -84,27 +98,13 @@ function handle_a_key_in_inventory_toolbar () {
     inventory.update()
 }
 function make_player () {
-    the_player = sprites.create(img`
-        . . . . . . f f f f . . . . . . 
-        . . . . f f f 2 2 f f f . . . . 
-        . . . f f f 2 2 2 2 f f f . . . 
-        . . f f f e e e e e e f f f . . 
-        . . f f e 2 2 2 2 2 2 e e f . . 
-        . . f e 2 f f f f f f 2 e f . . 
-        . . f f f f e e e e f f f f . . 
-        . f f e f b f 4 4 f b f e f f . 
-        . f e e 4 1 f d d f 1 4 e e f . 
-        . . f e e d d d d d d e e f . . 
-        . . . f e e 4 4 4 4 e e f . . . 
-        . . e 4 f 2 2 2 2 2 2 f 4 e . . 
-        . . 4 d f 2 2 2 2 2 2 f d 4 . . 
-        . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
-        . . . . . f f f f f f . . . . . 
-        . . . . . f f . . f f . . . . . 
-        `, SpriteKind.Player)
-    the_player.setFlag(SpriteFlag.StayInScreen, true)
+    the_player = sprites.create(assets.image`player_facing_forward`, SpriteKind.Player)
     the_player.z = 10
     enable_movement(true)
+    animate_sprite(the_player, assets.animation`player_walk_upwards`[1], characterAnimations.rule(Predicate.FacingUp, Predicate.NotMoving), assets.animation`player_walk_upwards`, characterAnimations.rule(Predicate.MovingUp))
+    animate_sprite(the_player, assets.animation`player_walk_right`[1], characterAnimations.rule(Predicate.FacingRight, Predicate.NotMoving), assets.animation`player_walk_right`, characterAnimations.rule(Predicate.MovingRight))
+    animate_sprite(the_player, assets.animation`player_walk_down`[1], characterAnimations.rule(Predicate.FacingDown, Predicate.NotMoving), assets.animation`player_walk_down`, characterAnimations.rule(Predicate.MovingDown))
+    animate_sprite(the_player, assets.animation`player_walk_left`[1], characterAnimations.rule(Predicate.FacingLeft, Predicate.NotMoving), assets.animation`player_walk_left`, characterAnimations.rule(Predicate.MovingLeft))
 }
 controller.down.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {

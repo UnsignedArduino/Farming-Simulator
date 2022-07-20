@@ -4,13 +4,16 @@
     "dependencies": {
         "device": "*",
         "Inventory": "github:unsignedarduino/inventory#master",
-        "controller": "*"
+        "controller": "*",
+        "arcade-character-animations": "github:microsoft/arcade-character-animations#v0.0.2"
     },
     "files": [
         "main.blocks",
         "main.ts",
         "README.md",
-        "assets.json"
+        "assets.json",
+        "images.g.jres",
+        "images.g.ts"
     ],
     "testFiles": [
         "test.ts"
