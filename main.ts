@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const House = SpriteKind.create()
+    export const Decoration = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
@@ -64,6 +65,7 @@ function load_environment_outside () {
     the_house = sprites.create(assets.image`house`, SpriteKind.House)
     tiles.placeOnTile(the_house, tiles.getTilesByType(assets.tile`house`)[0])
     the_house.y += -16
+    the_house.z = the_house.bottom / 100
     tiles.placeOnTile(the_player, tiles.getTilesByType(assets.tile`house`)[0].getNeighboringLocation(CollisionDirection.Bottom))
     tiles.setTileAt(tiles.getTilesByType(assets.tile`house`)[0], assets.tile`grass`)
     rng_ground = Random.createRNG(2)
@@ -76,12 +78,51 @@ function load_environment_outside () {
     for (let index = 0; index < 30; index++) {
         tiles.setTileAt(rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`)), sprites.castle.tileGrass2)
     }
+    for (let index = 0; index < 20; index++) {
+        place_decoration(assets.image`flower_1`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 2 / 16, true)
+    }
+    for (let index = 0; index < 20; index++) {
+        place_decoration(assets.image`flower_2`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 2 / 16, true)
+    }
+    for (let index = 0; index < 5; index++) {
+        place_decoration(sprites.castle.rock0, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
+    }
+    for (let index = 0; index < 5; index++) {
+        place_decoration(sprites.castle.rock1, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
+    }
+    for (let index = 0; index < 5; index++) {
+        place_decoration(sprites.castle.rock1, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
+    }
+    for (let index = 0; index < 5; index++) {
+        place_decoration(assets.tile`stump`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
+    }
+    for (let index = 0; index < 10; index++) {
+        place_decoration(assets.image`flower_3`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 3 / 16, true)
+    }
+    for (let index = 0; index < 10; index++) {
+        place_decoration(assets.image`flower_4`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 3 / 16, true)
+    }
+    for (let index = 0; index < 5; index++) {
+        place_decoration(assets.image`flower_5`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 3 / 16, true)
+    }
 }
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         move_left_in_inventory_toolbar()
     }
 })
+function place_decoration (image2: Image, location_in_list: any[], shift_tiles_up: number, can_go_through: boolean) {
+    if (can_go_through) {
+        the_decoration = sprites.create(image2, SpriteKind.Decoration)
+        tiles.placeOnTile(the_decoration, location_in_list[0])
+        the_decoration.y += shift_tiles_up * -16
+        the_decoration.z = the_decoration.bottom / 100
+        the_decoration.setFlag(SpriteFlag.Ghost, true)
+    } else {
+        tiles.setTileAt(location_in_list[0], image2)
+        tiles.setWallAt(location_in_list[0], true)
+    }
+}
 function move_down_in_inventory_toolbar () {
     if (cursor_in_inventory) {
         if (inventory.get_number(InventoryNumberAttribute.SelectedIndex) < inventory.get_items().length - 8) {
@@ -285,6 +326,7 @@ let last_inventory_select = 0
 let last_toolbar_select = 0
 let inventory: Inventory.Inventory = null
 let cursor_in_inventory = false
+let the_decoration: Sprite = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let the_player: Sprite = null
@@ -296,3 +338,6 @@ make_player()
 load_environment_outside()
 make_inventory_toolbar()
 controller.configureRepeatEventDefaults(333, 50)
+game.onUpdate(function () {
+    the_player.z = the_player.bottom / 100
+})

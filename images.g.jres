@@ -9,6 +9,41 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "house"
     },
+    "image2": {
+        "data": "hwQIABAAAAAAALC7zAAAAAAAG9HRDAAAAAAbMxFsZogAAD1V3XeGhwAAPVXdZniHAAAbMxEMeGcAABvR0Qx4BgAAsLvMAGYA",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "flower_1"
+    },
+    "image3": {
+        "data": "hwQIABAAAAAAAMDMzAAAAAAAzDYzDAAAAMA8bDZjZogAwDY/ZnOGhwDA9jZjY3iHAABsMzMGeGcAAMDMzAB4BgAAAAAAAGYA",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "flower_2"
+    },
+    "image4": {
+        "data": "hwQQABAAAAAAAADMzMzMzAAAzLvLzMvMAMC7zLvMu8wAvLvLvMy7zMC8u7u8zLzMwNvdu7zMzMy8u9u9vMzMzLzdu728vLvM3N3d28zMvMvc3d3bzL3My9zd3du83cvL3N3du9zdzcvA3b3L3N3NywC8u8zc3b3LAMDMzLzdvMwAAAAAwLzLzA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "rock_1"
+    },
+    "image5": {
+        "data": "hwQQABAAAAAAAAAAAAD/7gDg/////+/uANu9/v/v7u6wu9vt7u7u7rDdvb3u/+7/27293e7u/v/b29vb/v7//9vb29vu7u7u29vb2+7/7v/b29vb7u/v7tu9vd3u/u/usN29ve7u7u6wu9vt7v//7gDbve7u7v//AODu/v/u/v8AAAAAAO/u/w==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "stump_1"
+    },
+    "image6": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdwAAAAAADQ19BwAAAADQ3QAHAAAAAN3VbXd3AAAA0N0AcGcAAAANDQ13BgAAAAAAcGcAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "flower_3"
+    },
+    "image7": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u4AAAAAAADg4w4AAAAAAO7ufHd3ZwAA4M4MAHdnAADuzAB3ZwYAAAAAcHcGAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "flower_4"
+    },
+    "image8": {
+        "data": "hwQUABAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAACQCQAAAAAAABmZBwAAAAAAkAkAAAAAAAAAAHAAAAAAmQBwAAAAAJAZeXcHAAAAAJkABwAAAAAAAAAABwAAAAAAAAAAAAAAAJAJAAcAAAAAGZl3BwAAAACQCQAHAAAAAAAAAAAAAAAAAJkAcAAAAACQGXkHAAAAAACZcAAAAAAAAAAAcAAAAAAAAAAA",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "flower_5"
+    },
     "anim1": {
         "namespace": "myAnimations",
         "id": "anim1",

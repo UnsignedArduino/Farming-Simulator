@@ -73,6 +73,139 @@ cc66666666664c66e4e44e44e44feeee66c46666666666cc
 .....64eee444c66f4e44e44e44e44ee66c444eee46.....
 ......6ccc666c66e4e44e44e44e44ee66c666ccc6......
 `;
+            case "image2":
+            case "flower_1":return img`
+. . . . . . . . 
+. . . . . . . . 
+. . . . . . . . 
+. . . . . . . . 
+. b b d d b b . 
+b 1 1 3 3 1 1 b 
+b 1 3 5 5 3 1 b 
+b d 3 5 5 3 d b 
+c 1 1 d d 1 1 c 
+c d 1 d d 1 d c 
+. c c 7 6 c c . 
+. . 6 7 6 . . . 
+. . 6 6 8 8 8 6 
+. . 6 8 7 7 7 6 
+. . 8 7 7 7 6 . 
+. . 8 8 8 6 . . 
+`;
+            case "image3":
+            case "flower_2":return img`
+. . . . . . . . 
+. . . . . . . . 
+. . . . . . . . 
+. . c c c . . . 
+. c c 6 6 c . . 
+c c 3 3 f 6 c . 
+c 6 c f 6 3 c . 
+c 3 6 3 3 3 c . 
+c 3 6 6 3 3 c . 
+c 3 3 6 6 3 c . 
+. c 3 3 3 6 . . 
+. . 6 7 6 . . . 
+. . 6 6 8 8 8 6 
+. . 6 8 7 7 7 6 
+. . 8 7 7 7 6 . 
+. . 8 8 8 6 . . 
+`;
+            case "image4":
+            case "rock_1":return img`
+. . . . . . c c c c c c . . . . 
+. . . . c c b b d d d d c . . . 
+. . . c c b b d d d d d d c . . 
+. . c b b d b d d d d d d b c . 
+. c b b b d b b d d d d d b c . 
+. c b b b d d b d d d d b b c . 
+c b c b b b d d b b b b b c c . 
+c b c c b b b b d d d b c c c . 
+c b b c c c c c c c c c c c c . 
+c c b b b b b b c c b d d d b c 
+c c c c c c c c c d d d d d d c 
+c c c c c c c b c b d d d d d b 
+c b b b c c c b c c b d d d c b 
+c c b b b c c b b c c c c b b c 
+c c c c c c c c b b b b b b c c 
+c c c c c c c c c c c c c c c c 
+`;
+            case "image5":
+            case "stump_1":return img`
+. . . . . b b b b b b . . . . . 
+. . . b b d d d d d d b b . . . 
+. . b b d d b b b b d d b b . . 
+. e d b d b d d d d b d b d e . 
+. f d b d d b b b b d d b d e . 
+. f b d b b d d d d b b d b e . 
+. f e d d d b b b b d d d e e . 
+. f f e b d d d d d d b e e f . 
+. f f e e e e e e e e e e e f . 
+. f f e e e f e e e e e e e f . 
+. f f e f e e e f f e e f e e f 
+. f e e f e f e f e f e f e e e 
+f f e e e e f e e f f e f f e e 
+f e e e e f f e e e e e f f f e 
+e e e e f f f e f e e e e f f f 
+e e e e f f f e f e e e e f f f 
+`;
+            case "image6":
+            case "flower_3":return img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . d . d . d . . . . . . 
+. . . . . . d d d . . . . . . . 
+. . . . . d d 5 d d . . . . . . 
+. . . . . . d d d . . . . . . . 
+. . . . 7 d . d . d . . . . . . 
+. . . . 7 7 . 6 . . 7 7 . . . . 
+. . . . . 7 7 7 . 7 7 . . . . . 
+. . . . . . . 7 7 7 6 . . . . . 
+. . . . . . . 7 7 6 . . . . . . 
+. . . . . . . 7 6 . . . . . . . 
+`;
+            case "image7":
+            case "flower_4":return img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . e . e . e . . . . . . . 
+. . . . e e e e e . . . . . . . 
+. . . . e 3 e e c . . . . . . . 
+. . . . e e e c c . . . . . . . 
+. . . . . e c c . . . . . . . . 
+. . . . . . 7 . . 7 7 . . . . . 
+. . . . . . 7 . 7 7 . . . . . . 
+. . . . . . 7 . 7 7 . . . . . . 
+. . . . . . 7 7 7 6 . . . . . . 
+. . . . . . 7 7 6 . . . . . . . 
+. . . . . . 7 7 6 . . . . . . . 
+. . . . . . 6 6 . . . . . . . . 
+`;
+            case "image8":
+            case "flower_5":return img`
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+.......9............
+......999...9.......
+......919..919..9...
+...9...9...999.999..
+..919..7....9..919..
+..999..77...7...9...
+...9..77....7...77..
+...7...7.7.777..7...
+.7...7.........7..7.
+`;
         }
         return null;
     })
