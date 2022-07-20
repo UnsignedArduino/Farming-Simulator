@@ -172,9 +172,6 @@ function make_toolbar () {
     toolbar.bottom = scene.screenHeight() - 4
     toolbar.z = 50
 }
-function prepare_environment () {
-    scene.setBackgroundColor(7)
-}
 function make_inventory_toolbar () {
     in_inventory = false
     cursor_in_inventory = false
@@ -269,7 +266,6 @@ let cursor_in_inventory = false
 let toolbar: Inventory.Toolbar = null
 let item: Inventory.Item = null
 let in_inventory = false
-prepare_environment()
 make_player()
 make_inventory_toolbar()
 controller.configureRepeatEventDefaults(333, 50)
