@@ -1,3 +1,6 @@
+namespace SpriteKind {
+    export const House = SpriteKind.create()
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         move_up_in_inventory_toolbar()
@@ -54,6 +57,16 @@ controller.right.onEvent(ControllerButtonEvent.Repeated, function () {
         move_right_in_inventory_toolbar()
     }
 })
+function load_environment_outside () {
+    scene.setBackgroundColor(7)
+    tiles.setCurrentTilemap(tilemap`outside`)
+    scene.cameraFollowSprite(the_player)
+    the_house = sprites.create(assets.image`house`, SpriteKind.House)
+    tiles.placeOnTile(the_house, tiles.getTilesByType(assets.tile`house`)[0])
+    the_house.y += -16
+    tiles.placeOnTile(the_player, tiles.getTilesByType(assets.tile`house`)[0].getNeighboringLocation(CollisionDirection.Bottom))
+    tiles.setTileAt(tiles.getTilesByType(assets.tile`house`)[0], assets.tile`grass`)
+}
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         move_left_in_inventory_toolbar()
@@ -260,12 +273,14 @@ controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
 })
 let last_inventory_select = 0
 let last_toolbar_select = 0
-let the_player: Sprite = null
 let inventory: Inventory.Inventory = null
 let cursor_in_inventory = false
+let the_house: Sprite = null
+let the_player: Sprite = null
 let toolbar: Inventory.Toolbar = null
 let item: Inventory.Item = null
 let in_inventory = false
 make_player()
+load_environment_outside()
 make_inventory_toolbar()
 controller.configureRepeatEventDefaults(333, 50)
