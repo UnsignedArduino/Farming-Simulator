@@ -66,6 +66,16 @@ function load_environment_outside () {
     the_house.y += -16
     tiles.placeOnTile(the_player, tiles.getTilesByType(assets.tile`house`)[0].getNeighboringLocation(CollisionDirection.Bottom))
     tiles.setTileAt(tiles.getTilesByType(assets.tile`house`)[0], assets.tile`grass`)
+    rng_ground = Random.createRNG(2)
+    for (let index = 0; index < 50; index++) {
+        tiles.setTileAt(rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`)), sprites.castle.tileGrass1)
+    }
+    for (let index = 0; index < 40; index++) {
+        tiles.setTileAt(rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`)), sprites.castle.tileGrass3)
+    }
+    for (let index = 0; index < 30; index++) {
+        tiles.setTileAt(rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`)), sprites.castle.tileGrass2)
+    }
 }
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
@@ -275,11 +285,13 @@ let last_inventory_select = 0
 let last_toolbar_select = 0
 let inventory: Inventory.Inventory = null
 let cursor_in_inventory = false
+let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let the_player: Sprite = null
 let toolbar: Inventory.Toolbar = null
 let item: Inventory.Item = null
 let in_inventory = false
+stats.turnStats(true)
 make_player()
 load_environment_outside()
 make_inventory_toolbar()
