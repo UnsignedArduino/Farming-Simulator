@@ -8,6 +8,13 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         move_up_in_inventory_toolbar()
     }
 })
+function is_name_of_selected_item (name: string) {
+    if (!(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)])) {
+        return false
+    } else {
+        return toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)].get_text(ItemTextAttribute.Name) == name
+    }
+}
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     handle_b_key_in_inventory_toolbar()
 })
@@ -141,6 +148,12 @@ function place_decoration (image2: Image, location_in_list: any[], shift_tiles_u
         tiles.setWallAt(location_in_list[0], true)
     }
 }
+function make_item_action_label () {
+    action_label = textsprite.create("", 0, 15)
+    action_label.setFlag(SpriteFlag.RelativeToCamera, true)
+    action_label.bottom = scene.screenHeight() - 4
+    update_action_label()
+}
 function move_down_in_inventory_toolbar () {
     if (cursor_in_inventory) {
         if (inventory.get_number(InventoryNumberAttribute.SelectedIndex) < inventory.get_items().length - 8) {
@@ -157,11 +170,38 @@ function enable_movement (en: boolean) {
         controller.moveSprite(the_player, 0, 0)
     }
 }
+function update_action_label () {
+    if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [
+    assets.tile`grass`,
+    sprites.castle.tileGrass1,
+    sprites.castle.tileGrass3,
+    sprites.castle.tileGrass2
+    ]) && is_name_of_selected_item("Shovel")) {
+        action_label.setText("Remove grass")
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`stump`) && is_name_of_selected_item("Axe")) {
+        action_label.setText("Remove stump")
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), sprites.castle.tilePath5) && is_name_of_selected_item("Hoe")) {
+        action_label.setText("Till dirt")
+    } else if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
+        action_label.setText("Remove rock")
+    } else {
+        action_label.setText("")
+    }
+    action_label.right = scene.screenWidth() - 4
+}
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         move_right_in_inventory_toolbar()
     }
 })
+function tile_at_loc_is_one_off (loc_in_list: any[], tiles2: any[]) {
+    for (let tile of tiles2) {
+        if (tiles.tileAtLocationEquals(loc_in_list[0], tile)) {
+            return true
+        }
+    }
+    return false
+}
 function handle_a_key_in_inventory_toolbar () {
     if (cursor_in_inventory) {
         if (toolbar.get_items().length < toolbar.get_number(ToolbarNumberAttribute.MaxItems)) {
@@ -355,23 +395,26 @@ controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
 let last_inventory_select = 0
 let last_toolbar_select = 0
 let cursor_in_inventory = false
+let action_label: TextSprite = null
 let the_decoration: Sprite = null
 let the_cursor: Sprite = null
 let inventory: Inventory.Inventory = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let the_player: Sprite = null
-let toolbar: Inventory.Toolbar = null
 let item: Inventory.Item = null
+let toolbar: Inventory.Toolbar = null
 let in_inventory = false
 stats.turnStats(true)
 make_player()
 load_environment_outside()
 make_tile_cursor()
 make_inventory_toolbar()
+make_item_action_label()
 controller.configureRepeatEventDefaults(333, 50)
 give_starting_items()
 game.onUpdate(function () {
     the_player.z = the_player.bottom / 100
     update_tile_cursor()
+    update_action_label()
 })
