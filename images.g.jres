@@ -74,6 +74,11 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "tile_cursor"
     },
+    "image15": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAREQAAAAAAAHAHAAAAAAAAAHd3BwAAAAAGAAB3YAAAYHZ3d3dnAAAGdnd3d2cAAAZ2d3d3ZwAABnZ3d3dnAAAGdnd3d2cAAGB2d3d3ZwAAAAYGAGBgAAAAAGBmBgAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "watering_can"
+    },
     "anim1": {
         "namespace": "myAnimations",
         "id": "anim1",

@@ -166,6 +166,9 @@ function give_starting_items () {
     inventory.get_items().push(Inventory.create_item("Axe", assets.image`axe`))
     inventory.get_items().push(Inventory.create_item("Shovel", assets.image`shovel`))
     inventory.get_items().push(Inventory.create_item("Hoe", assets.image`hoe`))
+    item = Inventory.create_item("Watering can", assets.image`watering_can`)
+    item.set_text(ItemTextAttribute.Tooltip, "0%")
+    inventory.get_items().push(item)
 }
 function place_decoration (image2: Image, location_in_list: any[], shift_tiles_up: number, can_go_through: boolean) {
     if (can_go_through) {
