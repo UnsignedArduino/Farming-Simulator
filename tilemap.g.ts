@@ -16,6 +16,10 @@ namespace myTiles {
     export const tile5 = image.ofBuffer(hex``);
     //% fixedInstance jres blockIdentity=images._tile
     export const tile7 = image.ofBuffer(hex``);
+    //% fixedInstance jres blockIdentity=images._tile
+    export const tile8 = image.ofBuffer(hex``);
+    //% fixedInstance jres blockIdentity=images._tile
+    export const tile9 = image.ofBuffer(hex``);
 
     helpers._registerFactory("tilemap", function(name: string) {
         switch(helpers.stringTrim(name)) {
@@ -70,7 +74,7 @@ namespace myTiles {
 ..................................................
 ..................................................
 ..................................................
-`, [myTiles.transparency16,myTiles.tile1,myTiles.tile2,myTiles.tile3,sprites.castle.tilePath6,sprites.castle.tilePath3,sprites.castle.tilePath1,sprites.castle.tilePath4,myTiles.tile6,sprites.castle.tilePath5,myTiles.tile4,sprites.builtin.forestTiles0,myTiles.tile7], TileScale.Sixteen);
+`, [myTiles.transparency16,myTiles.tile1,myTiles.tile2,myTiles.tile3,sprites.castle.tilePath6,sprites.castle.tilePath3,sprites.castle.tilePath1,sprites.castle.tilePath4,myTiles.tile6,sprites.castle.tilePath5,myTiles.tile4,sprites.builtin.forestTiles0,myTiles.tile7,myTiles.tile8,myTiles.tile9], TileScale.Sixteen);
         }
         return null;
     })
@@ -92,6 +96,10 @@ namespace myTiles {
             case "tile5":return tile5;
             case "water":
             case "tile7":return tile7;
+            case "wet_dirt":
+            case "tile8":return tile8;
+            case "tilled_wet_dirt":
+            case "tile9":return tile9;
         }
         return null;
     })

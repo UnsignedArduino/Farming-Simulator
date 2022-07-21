@@ -3,6 +3,29 @@ namespace SpriteKind {
     export const Decoration = SpriteKind.create()
     export const TileCursor = SpriteKind.create()
 }
+function do_action () {
+    if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [
+    assets.tile`grass`,
+    sprites.castle.tileGrass1,
+    sprites.castle.tileGrass3,
+    sprites.castle.tileGrass2
+    ]) && is_name_of_selected_item("Shovel")) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), sprites.castle.tilePath5)
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`stump`) && is_name_of_selected_item("Axe")) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), sprites.castle.tilePath5)
+        tiles.setWallAt(the_cursor.tilemapLocation(), false)
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`wet_dirt`) && is_name_of_selected_item("Hoe")) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`)
+    } else if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), sprites.castle.tilePath5)
+        tiles.setWallAt(the_cursor.tilemapLocation(), false)
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`water`) && is_name_of_selected_item("Watering can") && get_watering_can_fill() < 100) {
+        change_watering_can_fill(1)
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), sprites.castle.tilePath5) && is_name_of_selected_item("Watering can") && get_watering_can_fill() >= 10) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`wet_dirt`)
+        change_watering_can_fill(-10)
+    }
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         move_up_in_inventory_toolbar()
@@ -86,7 +109,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         handle_a_key_in_inventory_toolbar()
     } else {
-    	
+        do_action()
     }
 })
 function animate_sprite (sprite: Sprite, _static: Image, static_condition: number, animation2: any[], animation_condition: number) {
@@ -208,12 +231,14 @@ function update_action_label () {
         label = "Remove grass"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`stump`) && is_name_of_selected_item("Axe")) {
         label = "Remove stump"
-    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), sprites.castle.tilePath5) && is_name_of_selected_item("Hoe")) {
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`wet_dirt`) && is_name_of_selected_item("Hoe")) {
         label = "Till dirt"
     } else if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
         label = "Remove rock"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`water`) && is_name_of_selected_item("Watering can") && get_watering_can_fill() < 100) {
         label = "Fill watering can"
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), sprites.castle.tilePath5) && is_name_of_selected_item("Watering can") && get_watering_can_fill() >= 10) {
+        label = "Water dirt"
     } else {
         label = ""
     }
@@ -260,6 +285,17 @@ function make_player () {
     animate_sprite(the_player, assets.animation`player_walk_down`[1], characterAnimations.rule(Predicate.FacingDown, Predicate.NotMoving), assets.animation`player_walk_down`, characterAnimations.rule(Predicate.MovingDown))
     animate_sprite(the_player, assets.animation`player_walk_left`[1], characterAnimations.rule(Predicate.FacingLeft, Predicate.NotMoving), assets.animation`player_walk_left`, characterAnimations.rule(Predicate.MovingLeft))
 }
+function change_watering_can_fill (by: number) {
+    if (!(is_name_of_selected_item("Watering can"))) {
+        return
+    }
+    item = toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)]
+    item.set_text(ItemTextAttribute.Tooltip, "" + Math.constrain(parseFloat(item.get_text(ItemTextAttribute.Tooltip)) + by, 0, 100))
+    if (item.get_text(ItemTextAttribute.Tooltip).length < 3) {
+        item.set_text(ItemTextAttribute.Tooltip, "" + item.get_text(ItemTextAttribute.Tooltip) + "%")
+    }
+    toolbar.update()
+}
 controller.down.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
         move_down_in_inventory_toolbar()
@@ -294,6 +330,11 @@ function move_right_in_inventory_toolbar () {
 }
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     handle_menu_key_in_inventory_toolbar()
+})
+controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
+    if (!(in_inventory)) {
+        do_action()
+    }
 })
 function get_watering_can_fill () {
     if (!(is_name_of_selected_item("Watering can"))) {
@@ -434,9 +475,9 @@ let item: Inventory.Item = null
 let toolbar: Inventory.Toolbar = null
 let can_last_use = false
 let can_use = false
-let the_cursor: Sprite = null
 let the_player: Sprite = null
 let in_inventory = false
+let the_cursor: Sprite = null
 stats.turnStats(true)
 make_player()
 load_environment_outside()

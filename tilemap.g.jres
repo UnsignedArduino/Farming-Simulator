@@ -46,6 +46,18 @@
         "tilemapTile": true,
         "displayName": "water"
     },
+    "tile8": {
+        "data": "hwQQABAAAADu7u7u7h7h7u7u7u7uHuHu7u7r7u7u7u4e4e7u7u7u7h7h7u7u7u7u7u7u7uvuHu7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7uvuvu7u7u7u6+6+7u7u7u7u7u7u7u7u7u7u7u7u7r7r7u7u7u7u7u7u7u7u7u7r7u7u7u7u7u7g==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "wet_dirt"
+    },
+    "tile9": {
+        "data": "hwQQABAAAADu7u7u7h7B7u7O7O7uHsHu7u7s7uzuzu4e4ezu7O7M7h7B7O7s7uzu7s7u7uzuHO7uzu7u7O7s7u7O7M7u7uzu7u7szu7O7O7uvuzO7s7u7u6+7M7uzuzu7u7szu7u7O7u7uzO7u7L7r7O7M7s7s7u7s7u7uzu7r7u7u7u7O7u7g==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "tilled_wet_dirt"
+    },
     "level2": {
         "id": "level2",
         "mimeType": "application/mkcd-tilemap",
@@ -72,7 +84,9 @@
             "sprites.castle.tilePath5",
             "myTiles.tile4",
             "sprites.builtin.forestTiles0",
-            "myTiles.tile7"
+            "myTiles.tile7",
+            "myTiles.tile8",
+            "myTiles.tile9"
         ],
         "displayName": "outside"
     },
