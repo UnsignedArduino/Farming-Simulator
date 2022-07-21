@@ -1,6 +1,7 @@
 namespace SpriteKind {
     export const House = SpriteKind.create()
     export const Decoration = SpriteKind.create()
+    export const TileCursor = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
@@ -117,6 +118,17 @@ function give_starting_items () {
     inventory.get_items().push(Inventory.create_item("Shovel", assets.image`shovel`))
     inventory.get_items().push(Inventory.create_item("Hoe", assets.image`hoe`))
 }
+function update_tile_cursor () {
+    if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingUp))) {
+        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Top))
+    } else if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingRight))) {
+        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Right))
+    } else if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingDown))) {
+        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Bottom))
+    } else {
+        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Left))
+    }
+}
 function place_decoration (image2: Image, location_in_list: any[], shift_tiles_up: number, can_go_through: boolean) {
     if (can_go_through) {
         the_decoration = sprites.create(image2, SpriteKind.Decoration)
@@ -226,6 +238,18 @@ function handle_menu_key_in_inventory_toolbar () {
         }
     }
 }
+function make_tile_cursor () {
+    the_cursor = sprites.create(assets.image`tile_cursor`, SpriteKind.TileCursor)
+    the_cursor.setFlag(SpriteFlag.Ghost, true)
+    the_cursor.z = 50
+    animation.runImageAnimation(
+    the_cursor,
+    assets.animation`tile_cursor_animation`,
+    500,
+    true
+    )
+    update_tile_cursor()
+}
 function move_up_in_inventory_toolbar () {
     if (cursor_in_inventory) {
         if (inventory.get_number(InventoryNumberAttribute.SelectedIndex) > 7) {
@@ -332,6 +356,7 @@ let last_inventory_select = 0
 let last_toolbar_select = 0
 let cursor_in_inventory = false
 let the_decoration: Sprite = null
+let the_cursor: Sprite = null
 let inventory: Inventory.Inventory = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
@@ -342,9 +367,11 @@ let in_inventory = false
 stats.turnStats(true)
 make_player()
 load_environment_outside()
+make_tile_cursor()
 make_inventory_toolbar()
 controller.configureRepeatEventDefaults(333, 50)
 give_starting_items()
 game.onUpdate(function () {
     the_player.z = the_player.bottom / 100
+    update_tile_cursor()
 })
