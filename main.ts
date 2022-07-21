@@ -111,6 +111,12 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         move_left_in_inventory_toolbar()
     }
 })
+function give_starting_items () {
+    inventory.get_items().push(Inventory.create_item("Pickaxe", assets.image`pickaxe_1`))
+    inventory.get_items().push(Inventory.create_item("Axe", assets.image`axe`))
+    inventory.get_items().push(Inventory.create_item("Shovel", assets.image`shovel`))
+    inventory.get_items().push(Inventory.create_item("Hoe", assets.image`hoe`))
+}
 function place_decoration (image2: Image, location_in_list: any[], shift_tiles_up: number, can_go_through: boolean) {
     if (can_go_through) {
         the_decoration = sprites.create(image2, SpriteKind.Decoration)
@@ -324,9 +330,9 @@ controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
 })
 let last_inventory_select = 0
 let last_toolbar_select = 0
-let inventory: Inventory.Inventory = null
 let cursor_in_inventory = false
 let the_decoration: Sprite = null
+let inventory: Inventory.Inventory = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let the_player: Sprite = null
@@ -338,6 +344,7 @@ make_player()
 load_environment_outside()
 make_inventory_toolbar()
 controller.configureRepeatEventDefaults(333, 50)
+give_starting_items()
 game.onUpdate(function () {
     the_player.z = the_player.bottom / 100
 })
