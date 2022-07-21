@@ -76,10 +76,10 @@ function make_time_label () {
     time_label.z = 20
     time_label.top = 4
     last_time = game.runtime()
-    secs_left_in_day = 86400
+    secs_left_in_day = 86400 - 8 * 3600
     secs_elapsed_today = 0
-    time_speed_multiplier = 240
     update_time()
+    on_day_start()
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     handle_b_key_in_inventory_toolbar()
@@ -440,6 +440,12 @@ function add_item (item_in_list: any[]) {
     }
     return false
 }
+function on_day_end () {
+	
+}
+function on_1_hour_before_day_end () {
+	
+}
 function handle_b_key_in_inventory_toolbar () {
     if (in_inventory) {
         cursor_in_inventory = !(cursor_in_inventory)
@@ -486,6 +492,9 @@ function format_time (secs_elapsed: number) {
     formatted_time = "" + formatted_hours_today + ":" + formatted_time
     return formatted_time
 }
+function on_day_start () {
+	
+}
 controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
         move_left_in_inventory_toolbar()
@@ -507,7 +516,6 @@ let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let action_label: TextSprite = null
 let item: Inventory.Item = null
-let time_speed_multiplier = 0
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let last_time = 0
@@ -518,16 +526,31 @@ let can_use = false
 let the_player: Sprite = null
 let in_inventory = false
 let the_cursor: Sprite = null
+let time_speed_multiplier = 0
 stats.turnStats(true)
 make_player()
 load_environment_outside()
 make_inventory_toolbar()
 make_tile_cursor_and_action_label()
 make_time_label()
-controller.configureRepeatEventDefaults(333, 50)
 give_starting_items()
+controller.configureRepeatEventDefaults(333, 50)
+time_speed_multiplier = 2400
 game.onUpdate(function () {
     the_player.z = the_player.bottom / 100
     update_tile_cursor_and_action_label()
     update_time()
+})
+forever(function () {
+    secs_left_in_day = 86400 - 8 * 3600
+    secs_elapsed_today = 8 * 3600
+    on_day_start()
+    while (secs_elapsed_today <= 86400 - 5 * 3600) {
+        pause(0)
+    }
+    on_1_hour_before_day_end()
+    while (secs_elapsed_today <= 86400 - 4 * 3600) {
+        pause(0)
+    }
+    on_day_end()
 })
