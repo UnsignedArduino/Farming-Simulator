@@ -69,6 +69,18 @@ function is_name_of_selected_item (name: string) {
         return false
     }
 }
+function make_time_label () {
+    time_label = textsprite.create("8:00", 1, 15)
+    time_label.setBorder(1, 15, 1)
+    time_label.setFlag(SpriteFlag.RelativeToCamera, true)
+    time_label.z = 20
+    time_label.top = 4
+    last_time = game.runtime()
+    secs_left_in_day = 86400
+    secs_elapsed_today = 0
+    time_speed_multiplier = 240
+    update_time()
+}
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     handle_b_key_in_inventory_toolbar()
 })
@@ -258,6 +270,16 @@ function tile_at_loc_is_one_off (loc_in_list: any[], tiles2: any[]) {
         }
     }
     return false
+}
+function update_time () {
+    secs_left_in_day += (game.runtime() - last_time) / 1000 * time_speed_multiplier * -1
+    last_time = game.runtime()
+    if (secs_left_in_day < 0) {
+        secs_left_in_day = 86400 - Math.abs(secs_left_in_day)
+    }
+    secs_elapsed_today = 86400 - secs_left_in_day
+    time_label.setText(format_time(secs_elapsed_today))
+    time_label.right = scene.screenWidth() - 4
 }
 function handle_a_key_in_inventory_toolbar () {
     if (cursor_in_inventory) {
@@ -454,6 +476,16 @@ function make_inventory () {
     inventory.top = 4
     inventory.z = 50
 }
+function format_time (secs_elapsed: number) {
+    formatted_hours_today = Math.floor(Math.round(secs_elapsed / 60) / 60)
+    formatted_minutes_today = Math.round(secs_elapsed / 60) % 60
+    formatted_time = "" + formatted_minutes_today
+    if (formatted_time.length < 2) {
+        formatted_time = "0" + formatted_time
+    }
+    formatted_time = "" + formatted_hours_today + ":" + formatted_time
+    return formatted_time
+}
 controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
         move_left_in_inventory_toolbar()
@@ -462,6 +494,9 @@ controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
 function have_something_selected_in_toolbar () {
     return !(!(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)]))
 }
+let formatted_time = ""
+let formatted_minutes_today = 0
+let formatted_hours_today = 0
 let last_inventory_select = 0
 let last_toolbar_select = 0
 let label = ""
@@ -472,6 +507,11 @@ let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let action_label: TextSprite = null
 let item: Inventory.Item = null
+let time_speed_multiplier = 0
+let secs_elapsed_today = 0
+let secs_left_in_day = 0
+let last_time = 0
+let time_label: TextSprite = null
 let toolbar: Inventory.Toolbar = null
 let can_last_use = false
 let can_use = false
@@ -483,9 +523,11 @@ make_player()
 load_environment_outside()
 make_inventory_toolbar()
 make_tile_cursor_and_action_label()
+make_time_label()
 controller.configureRepeatEventDefaults(333, 50)
 give_starting_items()
 game.onUpdate(function () {
     the_player.z = the_player.bottom / 100
     update_tile_cursor_and_action_label()
+    update_time()
 })
