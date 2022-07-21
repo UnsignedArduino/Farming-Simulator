@@ -160,23 +160,20 @@ function load_environment_outside () {
     for (let index = 0; index < 30; index++) {
         tiles.setTileAt(rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`)), sprites.castle.tileGrass2)
     }
-    for (let index = 0; index < 20; index++) {
-        place_decoration(assets.image`flower_1`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 2 / 16, true)
-    }
-    for (let index = 0; index < 20; index++) {
-        place_decoration(assets.image`flower_2`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 2 / 16, true)
-    }
-    for (let index = 0; index < 5; index++) {
-        place_decoration(sprites.castle.rock0, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
-    }
-    for (let index = 0; index < 5; index++) {
-        place_decoration(sprites.castle.rock1, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
-    }
     for (let index = 0; index < 5; index++) {
         place_decoration(sprites.castle.rock1, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
     }
     for (let index = 0; index < 5; index++) {
         place_decoration(assets.tile`stump`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
+    }
+    for (let index = 0; index < 5; index++) {
+        place_decoration(sprites.castle.rock0, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 0, false)
+    }
+    for (let index = 0; index < 20; index++) {
+        place_decoration(assets.image`flower_1`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 2 / 16, true)
+    }
+    for (let index = 0; index < 20; index++) {
+        place_decoration(assets.image`flower_2`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 2 / 16, true)
     }
     for (let index = 0; index < 10; index++) {
         place_decoration(assets.image`flower_3`, [rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`))], 3 / 16, true)
@@ -347,6 +344,17 @@ function move_right_in_inventory_toolbar () {
         }
     }
 }
+function screen_shade (amount: number) {
+    if (!(spriteutils.isDestroyed(screen_shader))) {
+        screen_shader.destroy()
+    }
+    if (amount == -1) {
+        return
+    }
+    screen_shader = shader.createRectangularShaderSprite(scene.screenWidth(), scene.screenHeight(), amount)
+    screen_shader.setFlag(SpriteFlag.RelativeToCamera, true)
+    screen_shader.setPosition(scene.screenWidth() / 2, scene.screenHeight() / 2)
+}
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     handle_menu_key_in_inventory_toolbar()
 })
@@ -449,12 +457,14 @@ function add_item (item_in_list: any[]) {
 }
 function on_day_end () {
     enable_movement(false)
+    screen_shade(shader.ShadeLevel.Two)
     scene.followPath(the_player, scene.aStar(the_player.tilemapLocation(), tiles.getTilesByType(assets.tile`house`)[0]), 80)
     fade(true, true)
     scene.followPath(the_player, scene.aStar(the_player.tilemapLocation(), the_player.tilemapLocation()), 0)
+    screen_shade(-1)
 }
 function on_1_hour_before_day_end () {
-	
+    screen_shade(shader.ShadeLevel.One)
 }
 function handle_b_key_in_inventory_toolbar () {
     if (in_inventory) {
@@ -528,6 +538,7 @@ let formatted_minutes_today = 0
 let formatted_hours_today = 0
 let last_inventory_select = 0
 let last_toolbar_select = 0
+let screen_shader: Sprite = null
 let label = ""
 let cursor_in_inventory = false
 let the_decoration: Sprite = null
@@ -558,7 +569,7 @@ make_tile_cursor_and_action_label()
 make_time_label()
 give_starting_items()
 controller.configureRepeatEventDefaults(333, 50)
-time_speed_multiplier = 240 * 15
+time_speed_multiplier = 240 * 1
 timer.background(function () {
     while (true) {
         secs_left_in_day = 86400 - 8 * 3600
