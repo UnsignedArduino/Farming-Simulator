@@ -18,6 +18,7 @@ function update_tile_cursor_and_action_label () {
     } else {
         tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Left))
     }
+    the_cursor.setFlag(SpriteFlag.Invisible, !(have_something_selected_in_toolbar()))
     can_use = update_action_label()
     if (can_last_use != can_use) {
         can_last_use = can_use
@@ -39,10 +40,10 @@ function update_tile_cursor_and_action_label () {
     }
 }
 function is_name_of_selected_item (name: string) {
-    if (!(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)])) {
-        return false
-    } else {
+    if (have_something_selected_in_toolbar()) {
         return toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)].get_text(ItemTextAttribute.Name) == name
+    } else {
+        return false
     }
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -406,6 +407,9 @@ controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
         move_left_in_inventory_toolbar()
     }
 })
+function have_something_selected_in_toolbar () {
+    return !(!(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)]))
+}
 let last_inventory_select = 0
 let last_toolbar_select = 0
 let label = ""
