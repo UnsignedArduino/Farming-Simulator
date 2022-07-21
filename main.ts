@@ -79,7 +79,6 @@ function make_time_label () {
     secs_left_in_day = 86400 - 8 * 3600
     secs_elapsed_today = 0
     update_time()
-    on_day_start()
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     handle_b_key_in_inventory_toolbar()
@@ -151,8 +150,6 @@ function load_environment_outside () {
     tiles.placeOnTile(the_house, tiles.getTilesByType(assets.tile`house`)[0])
     the_house.y += -16
     the_house.z = the_house.bottom / 100
-    tiles.placeOnTile(the_player, tiles.getTilesByType(assets.tile`house`)[0].getNeighboringLocation(CollisionDirection.Bottom))
-    tiles.setTileAt(tiles.getTilesByType(assets.tile`house`)[0], assets.tile`grass`)
     rng_ground = Random.createRNG(2)
     for (let index = 0; index < 50; index++) {
         tiles.setTileAt(rng_ground.randomElement(tiles.getTilesByType(assets.tile`grass`)), sprites.castle.tileGrass1)
@@ -379,6 +376,16 @@ function handle_menu_key_in_inventory_toolbar () {
         }
     }
 }
+function fade (in_or_out: boolean, block: boolean) {
+    if (in_or_out) {
+        color.startFade(color.originalPalette, color.Black, 2000)
+    } else {
+        color.startFade(color.Black, color.originalPalette, 2000)
+    }
+    if (block) {
+        color.pauseUntilFadeDone()
+    }
+}
 function move_up_in_inventory_toolbar () {
     if (cursor_in_inventory) {
         if (inventory.get_number(InventoryNumberAttribute.SelectedIndex) > 7) {
@@ -441,7 +448,10 @@ function add_item (item_in_list: any[]) {
     return false
 }
 function on_day_end () {
-	
+    enable_movement(false)
+    scene.followPath(the_player, scene.aStar(the_player.tilemapLocation(), tiles.getTilesByType(assets.tile`house`)[0]), 80)
+    fade(true, true)
+    scene.followPath(the_player, scene.aStar(the_player.tilemapLocation(), the_player.tilemapLocation()), 0)
 }
 function on_1_hour_before_day_end () {
 	
@@ -493,7 +503,17 @@ function format_time (secs_elapsed: number) {
     return formatted_time
 }
 function on_day_start () {
-	
+    tiles.placeOnTile(the_player, tiles.getTilesByType(assets.tile`house`)[0])
+    the_player.y += 1
+    characterAnimations.setCharacterState(the_player, characterAnimations.rule(Predicate.FacingDown, Predicate.NotMoving))
+    timer.background(function () {
+        while (!(controller.anyButton.isPressed())) {
+            pause(0)
+        }
+        enable_movement(true)
+        characterAnimations.clearCharacterState(the_player)
+    })
+    fade(false, false)
 }
 controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
@@ -516,8 +536,6 @@ let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let action_label: TextSprite = null
 let item: Inventory.Item = null
-let secs_elapsed_today = 0
-let secs_left_in_day = 0
 let last_time = 0
 let time_label: TextSprite = null
 let toolbar: Inventory.Toolbar = null
@@ -526,8 +544,13 @@ let can_use = false
 let the_player: Sprite = null
 let in_inventory = false
 let the_cursor: Sprite = null
+let secs_elapsed_today = 0
+let secs_left_in_day = 0
 let time_speed_multiplier = 0
 stats.turnStats(true)
+color.setPalette(
+color.Black
+)
 make_player()
 load_environment_outside()
 make_inventory_toolbar()
@@ -535,22 +558,25 @@ make_tile_cursor_and_action_label()
 make_time_label()
 give_starting_items()
 controller.configureRepeatEventDefaults(333, 50)
-time_speed_multiplier = 2400
+time_speed_multiplier = 240 * 15
+timer.background(function () {
+    while (true) {
+        secs_left_in_day = 86400 - 8 * 3600
+        secs_elapsed_today = 8 * 3600
+        on_day_start()
+        while (secs_elapsed_today <= 86400 - 5 * 3600) {
+            pause(0)
+        }
+        on_1_hour_before_day_end()
+        while (secs_elapsed_today <= 86400 - 4 * 3600) {
+            pause(0)
+        }
+        on_day_end()
+        pause(2000)
+    }
+})
 game.onUpdate(function () {
     the_player.z = the_player.bottom / 100
     update_tile_cursor_and_action_label()
     update_time()
-})
-forever(function () {
-    secs_left_in_day = 86400 - 8 * 3600
-    secs_elapsed_today = 8 * 3600
-    on_day_start()
-    while (secs_elapsed_today <= 86400 - 5 * 3600) {
-        pause(0)
-    }
-    on_1_hour_before_day_end()
-    while (secs_elapsed_today <= 86400 - 4 * 3600) {
-        pause(0)
-    }
-    on_day_end()
 })
