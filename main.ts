@@ -8,6 +8,36 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         move_up_in_inventory_toolbar()
     }
 })
+function update_tile_cursor_and_action_label () {
+    if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingUp))) {
+        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Top))
+    } else if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingRight))) {
+        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Right))
+    } else if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingDown))) {
+        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Bottom))
+    } else {
+        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Left))
+    }
+    can_use = update_action_label()
+    if (can_last_use != can_use) {
+        can_last_use = can_use
+        if (can_use) {
+            animation.runImageAnimation(
+            the_cursor,
+            assets.animation`tile_cursor_animation_can_do`,
+            500,
+            true
+            )
+        } else {
+            animation.runImageAnimation(
+            the_cursor,
+            assets.animation`tile_cursor_animation`,
+            500,
+            true
+            )
+        }
+    }
+}
 function is_name_of_selected_item (name: string) {
     if (!(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)])) {
         return false
@@ -34,6 +64,17 @@ function remove_item_from_toolbar (index: number) {
     }
     toolbar.update()
     return Inventory.create_item(item.get_text(ItemTextAttribute.Name), item.get_image())
+}
+function make_tile_cursor_and_action_label () {
+    the_cursor = sprites.create(assets.image`tile_cursor`, SpriteKind.TileCursor)
+    the_cursor.setFlag(SpriteFlag.Ghost, true)
+    the_cursor.z = 20
+    action_label = textsprite.create("", 0, 15)
+    action_label.setFlag(SpriteFlag.RelativeToCamera, true)
+    action_label.bottom = scene.screenHeight() - 4
+    action_label.z = 20
+    can_last_use = true
+    update_tile_cursor_and_action_label()
 }
 controller.up.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
@@ -125,17 +166,6 @@ function give_starting_items () {
     inventory.get_items().push(Inventory.create_item("Shovel", assets.image`shovel`))
     inventory.get_items().push(Inventory.create_item("Hoe", assets.image`hoe`))
 }
-function update_tile_cursor () {
-    if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingUp))) {
-        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Top))
-    } else if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingRight))) {
-        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Right))
-    } else if (characterAnimations.matchesRule(the_player, characterAnimations.rule(Predicate.FacingDown))) {
-        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Bottom))
-    } else {
-        tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Left))
-    }
-}
 function place_decoration (image2: Image, location_in_list: any[], shift_tiles_up: number, can_go_through: boolean) {
     if (can_go_through) {
         the_decoration = sprites.create(image2, SpriteKind.Decoration)
@@ -147,12 +177,6 @@ function place_decoration (image2: Image, location_in_list: any[], shift_tiles_u
         tiles.setTileAt(location_in_list[0], image2)
         tiles.setWallAt(location_in_list[0], true)
     }
-}
-function make_item_action_label () {
-    action_label = textsprite.create("", 0, 15)
-    action_label.setFlag(SpriteFlag.RelativeToCamera, true)
-    action_label.bottom = scene.screenHeight() - 4
-    update_action_label()
 }
 function move_down_in_inventory_toolbar () {
     if (cursor_in_inventory) {
@@ -177,17 +201,19 @@ function update_action_label () {
     sprites.castle.tileGrass3,
     sprites.castle.tileGrass2
     ]) && is_name_of_selected_item("Shovel")) {
-        action_label.setText("Remove grass")
+        label = "Remove grass"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`stump`) && is_name_of_selected_item("Axe")) {
-        action_label.setText("Remove stump")
+        label = "Remove stump"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), sprites.castle.tilePath5) && is_name_of_selected_item("Hoe")) {
-        action_label.setText("Till dirt")
+        label = "Till dirt"
     } else if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
-        action_label.setText("Remove rock")
+        label = "Remove rock"
     } else {
-        action_label.setText("")
+        label = ""
     }
+    action_label.setText(label)
     action_label.right = scene.screenWidth() - 4
+    return label != ""
 }
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
@@ -277,18 +303,6 @@ function handle_menu_key_in_inventory_toolbar () {
             last_inventory_select = inventory.get_number(InventoryNumberAttribute.SelectedIndex)
         }
     }
-}
-function make_tile_cursor () {
-    the_cursor = sprites.create(assets.image`tile_cursor`, SpriteKind.TileCursor)
-    the_cursor.setFlag(SpriteFlag.Ghost, true)
-    the_cursor.z = 50
-    animation.runImageAnimation(
-    the_cursor,
-    assets.animation`tile_cursor_animation`,
-    500,
-    true
-    )
-    update_tile_cursor()
 }
 function move_up_in_inventory_toolbar () {
     if (cursor_in_inventory) {
@@ -394,27 +408,28 @@ controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
 })
 let last_inventory_select = 0
 let last_toolbar_select = 0
+let label = ""
 let cursor_in_inventory = false
-let action_label: TextSprite = null
 let the_decoration: Sprite = null
-let the_cursor: Sprite = null
 let inventory: Inventory.Inventory = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
-let the_player: Sprite = null
+let action_label: TextSprite = null
 let item: Inventory.Item = null
 let toolbar: Inventory.Toolbar = null
+let can_last_use = false
+let can_use = false
+let the_cursor: Sprite = null
+let the_player: Sprite = null
 let in_inventory = false
 stats.turnStats(true)
 make_player()
 load_environment_outside()
-make_tile_cursor()
 make_inventory_toolbar()
-make_item_action_label()
+make_tile_cursor_and_action_label()
 controller.configureRepeatEventDefaults(333, 50)
 give_starting_items()
 game.onUpdate(function () {
     the_player.z = the_player.bottom / 100
-    update_tile_cursor()
-    update_action_label()
+    update_tile_cursor_and_action_label()
 })
