@@ -212,6 +212,8 @@ function update_action_label () {
         label = "Till dirt"
     } else if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
         label = "Remove rock"
+    } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`water`) && is_name_of_selected_item("Watering can") && get_watering_can_fill() < 100) {
+        label = "Fill watering can"
     } else {
         label = ""
     }
@@ -293,6 +295,12 @@ function move_right_in_inventory_toolbar () {
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     handle_menu_key_in_inventory_toolbar()
 })
+function get_watering_can_fill () {
+    if (!(is_name_of_selected_item("Watering can"))) {
+        return 0
+    }
+    return parseFloat(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)].get_text(ItemTextAttribute.Tooltip))
+}
 function handle_menu_key_in_inventory_toolbar () {
     in_inventory = !(in_inventory)
     inventory.setFlag(SpriteFlag.Invisible, !(in_inventory))
@@ -318,7 +326,7 @@ function move_up_in_inventory_toolbar () {
     }
 }
 function make_toolbar () {
-    toolbar = Inventory.create_toolbar([], 3)
+    toolbar = Inventory.create_toolbar([], 2)
     toolbar.setFlag(SpriteFlag.RelativeToCamera, true)
     toolbar.left = 4
     toolbar.bottom = scene.screenHeight() - 4
