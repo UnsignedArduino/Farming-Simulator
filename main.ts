@@ -634,6 +634,7 @@ let secs_left_in_day = 0
 let time_speed_multiplier = 0
 let DEBUG_tilemap = false
 DEBUG_tilemap = true
+let DEBUG_menu = true
 stats.turnStats(true)
 color.setPalette(
 color.Black
@@ -644,24 +645,28 @@ assets.tile`tilled_wet_dirt_with_potato_2`,
 assets.tile`tilled_wet_dirt_with_potato_3`,
 assets.tile`tilled_wet_dirt_with_potato_4`
 ]
+let potato_next_stage_chance = 40
 let carrot_stages = [
 assets.tile`tilled_wet_dirt_with_carrot_1`,
 assets.tile`tilled_wet_dirt_with_carrot_2`,
 assets.tile`tilled_wet_dirt_with_carrot_3`,
 assets.tile`tilled_wet_dirt_with_carrot_4`
 ]
+let carrot_next_stage_chance = 50
 let beetroot_stages = [
 assets.tile`tilled_wet_dirt_with_beetroot_1`,
 assets.tile`tilled_wet_dirt_with_beetroot_2`,
 assets.tile`tilled_wet_dirt_with_beetroot_3`,
 assets.tile`tilled_wet_dirt_with_beetroot_4`
 ]
+let beetroot_next_stage_chance = 60
 let lettuce_stages = [
 assets.tile`tilled_wet_dirt_with_lettuce_1`,
 assets.tile`tilled_wet_dirt_with_lettuce_2`,
 assets.tile`tilled_wet_dirt_with_lettuce_3`,
 assets.tile`tilled_wet_dirt_with_lettuce_4`
 ]
+let lettuce_next_stage_chance = 70
 make_player()
 load_environment_outside()
 make_inventory_toolbar()

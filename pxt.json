@@ -12,7 +12,8 @@
         "arcade-shader": "github:riknoll/arcade-shader#d2a2572906fdb68ff429f337e30606b069e688ea",
         "arcade-tilemap-a-star": "github:jwunderl/arcade-tilemap-a-star#v0.4.0",
         "Color Fading": "github:jwunderl/pxt-color#v0.2.2",
-        "Timers": "github:microsoft/arcade-timers#v1.1.0"
+        "Timers": "github:microsoft/arcade-timers#v1.1.0",
+        "arcade-mini-menu": "github:riknoll/arcade-mini-menu#10013ca1dcba54156faf7f4fefff9bc8db24ff26"
     },
     "files": [
         "main.blocks",
