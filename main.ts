@@ -42,6 +42,8 @@ function do_action () {
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Lettuce seed")) {
         tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt_with_lettuce_1`)
         change_stackable_item_count(-1)
+    } else if (is_name_of_selected_item("Debug menu")) {
+        open_debug_menu()
     }
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -59,7 +61,7 @@ function update_tile_cursor_and_action_label () {
     } else {
         tiles.placeOnTile(the_cursor, the_player.tilemapLocation().getNeighboringLocation(CollisionDirection.Left))
     }
-    the_cursor.setFlag(SpriteFlag.Invisible, !(have_something_selected_in_toolbar()))
+    the_cursor.setFlag(SpriteFlag.Invisible, !(have_something_selected_in_toolbar()) || is_name_of_selected_item("Debug menu"))
     can_use = update_action_label()
     if (can_last_use != can_use) {
         can_last_use = can_use
@@ -99,7 +101,13 @@ function make_time_label () {
     update_time()
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    handle_b_key_in_inventory_toolbar()
+    if (in_inventory) {
+        handle_b_key_in_inventory_toolbar()
+    } else if (in_menu) {
+    	
+    } else {
+        handle_b_key_in_inventory_toolbar()
+    }
 })
 function remove_item_from_toolbar (index: number) {
     item = toolbar.get_items()[index]
@@ -150,6 +158,8 @@ function change_stackable_item_count (by: number) {
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         handle_a_key_in_inventory_toolbar()
+    } else if (in_menu) {
+    	
     } else {
         do_action()
     }
@@ -243,6 +253,11 @@ function give_starting_items () {
     inventory.get_items().push(create_item_with_tooltip("Carrot seed", assets.image`carrot_seed`, "" + seed_rng.randomRange(5, 10)))
     inventory.get_items().push(create_item_with_tooltip("Beetroot seed", assets.image`beetroot_seed`, "" + seed_rng.randomRange(5, 10)))
     inventory.get_items().push(create_item_with_tooltip("Lettuce seed", assets.image`lettuce_seed`, "" + seed_rng.randomRange(5, 10)))
+    inventory.update()
+    if (DEBUG_menu) {
+        toolbar.get_items().push(Inventory.create_item("Debug menu", assets.image`popup_debug_menu`))
+        toolbar.update()
+    }
 }
 function place_decoration (image2: Image, location_in_list: any[], shift_tiles_up: number, can_go_through: boolean) {
     if (can_go_through) {
@@ -272,6 +287,50 @@ function enable_movement (en: boolean) {
         controller.moveSprite(the_player, 0, 0)
     }
 }
+function open_debug_menu () {
+    enable_movement(false)
+    if (!(spriteutils.isDestroyed(menu_debug))) {
+        menu_debug.destroy()
+    }
+    in_menu = true
+    menu_debug = miniMenu.createMenu(
+    miniMenu.createMenuItem("Give lots of seeds"),
+    miniMenu.createMenuItem("Overfill watering can"),
+    miniMenu.createMenuItem("Reset day clock"),
+    miniMenu.createMenuItem("Go to end of day"),
+    miniMenu.createMenuItem("Tick plants"),
+    miniMenu.createMenuItem("Increase stage of all plants"),
+    miniMenu.createMenuItem("Decrease stage of all plants"),
+    miniMenu.createMenuItem("Harvest all grown plants"),
+    miniMenu.createMenuItem("Remove all plants"),
+    miniMenu.createMenuItem("Water all dirt"),
+    miniMenu.createMenuItem("Till all wet dirt")
+    )
+    menu_debug.setFlag(SpriteFlag.RelativeToCamera, true)
+    menu_debug.top = 4
+    menu_debug.left = 4
+    menu_debug.z = 20
+    menu_debug.setDimensions(scene.screenWidth() - 8, scene.screenHeight() - 32)
+    menu_debug.setTitle("Debug menu")
+    menu_debug.setMenuStyleProperty(miniMenu.MenuStyleProperty.Border, 1)
+    menu_debug.setMenuStyleProperty(miniMenu.MenuStyleProperty.BorderColor, images.colorBlock(12))
+    menu_debug.setMenuStyleProperty(miniMenu.MenuStyleProperty.BackgroundColor, images.colorBlock(13))
+    menu_debug.setMenuStyleProperty(miniMenu.MenuStyleProperty.ScrollIndicatorColor, images.colorBlock(12))
+    menu_debug.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Foreground, images.colorBlock(12))
+    menu_debug.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Background, images.colorBlock(13))
+    menu_debug.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
+    menu_debug.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, images.colorBlock(12))
+    menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
+    menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Background, images.colorBlock(11))
+    menu_debug.onButtonPressed(controller.A, function (selection, selectedIndex) {
+    	
+    })
+    menu_debug.onButtonPressed(controller.B, function (selection, selectedIndex) {
+        menu_debug.destroy()
+        enable_movement(true)
+        in_menu = false
+    })
+}
 function update_action_label () {
     if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [
     assets.tile`grass`,
@@ -298,6 +357,8 @@ function update_action_label () {
         label = "Plant beetroot seed"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Lettuce seed")) {
         label = "Plant lettuce seed"
+    } else if (is_name_of_selected_item("Debug menu")) {
+        label = "Open debug menu"
     } else {
         label = ""
     }
@@ -412,7 +473,11 @@ controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     handle_menu_key_in_inventory_toolbar()
 })
 controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
-    if (!(in_inventory)) {
+    if (in_inventory) {
+    	
+    } else if (in_menu) {
+    	
+    } else {
         do_action()
     }
 })
@@ -613,6 +678,7 @@ let row = 0
 let col = 0
 let screen_shader: Sprite = null
 let label = ""
+let menu_debug: miniMenu.MenuSprite = null
 let cursor_in_inventory = false
 let the_decoration: Sprite = null
 let seed_rng: FastRandomBlocks = null
@@ -620,6 +686,7 @@ let inventory: Inventory.Inventory = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let action_label: TextSprite = null
+let in_menu = false
 let last_time = 0
 let time_label: TextSprite = null
 let toolbar: Inventory.Toolbar = null
@@ -632,9 +699,10 @@ let item: Inventory.Item = null
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
+let DEBUG_menu = false
 let DEBUG_tilemap = false
 DEBUG_tilemap = true
-let DEBUG_menu = true
+DEBUG_menu = true
 stats.turnStats(true)
 color.setPalette(
 color.Black

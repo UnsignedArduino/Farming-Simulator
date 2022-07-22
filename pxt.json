@@ -13,7 +13,8 @@
         "arcade-tilemap-a-star": "github:jwunderl/arcade-tilemap-a-star#v0.4.0",
         "Color Fading": "github:jwunderl/pxt-color#v0.2.2",
         "Timers": "github:microsoft/arcade-timers#v1.1.0",
-        "arcade-mini-menu": "github:riknoll/arcade-mini-menu#10013ca1dcba54156faf7f4fefff9bc8db24ff26"
+        "arcade-mini-menu": "github:riknoll/arcade-mini-menu#10013ca1dcba54156faf7f4fefff9bc8db24ff26",
+        "ColorBlock": "github:UnsignedArduino/ColorBlock#ac7b9500e40045cf1ddd8c5b7481d11bcb317f5f"
     },
     "files": [
         "main.blocks",

@@ -104,6 +104,11 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "lettuce_seed"
     },
+    "image21": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzAAAzP/////PAADMHx8fH88AAMwfHx8fzwAAzP8f/x/PAADMHx8f/88AAMwfHx8fzwAAzB//Hx/PAADM/x//H88AAMsfHx8fzwAAy//////PAADCzMzMzMwAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "popup_debug_menu"
+    },
     "anim1": {
         "namespace": "myAnimations",
         "id": "anim1",

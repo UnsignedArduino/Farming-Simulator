@@ -434,6 +434,25 @@ e e e e f f f e f e e e e f f f
 . . . . . 7 . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 `;
+            case "image21":
+            case "popup_debug_menu":return img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . c c c c c c c c c b b 2 . . 
+. . c c c c c c c c c c c c . . 
+. . c f f f f f f f f f f c . . 
+. . c f 1 1 f 1 1 1 f 1 f c . . 
+. . c f f f f f f f f f f c . . 
+. . c f 1 1 1 1 1 f 1 1 f c . . 
+. . c f f f f f f f f f f c . . 
+. . c f 1 1 f 1 1 1 f 1 f c . . 
+. . c f f f f f f f f f f c . . 
+. . c f 1 1 1 f 1 1 1 1 f c . . 
+. . c f f f f f f f f f f c . . 
+. . c c c c c c c c c c c c . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`;
         }
         return null;
     })
