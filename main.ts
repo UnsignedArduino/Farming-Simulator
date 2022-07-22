@@ -90,8 +90,13 @@ function is_name_of_selected_item (name: string) {
     }
 }
 function make_time_label () {
-    time_label = textsprite.create("8:00", 1, 15)
-    time_label.setBorder(1, 15, 1)
+    if (DEBUG_tilemap || DEBUG_menu) {
+        time_label = textsprite.create("8:00", 1, 2)
+        time_label.setBorder(1, 2, 1)
+    } else {
+        time_label = textsprite.create("8:00", 13, 12)
+        time_label.setBorder(1, 12, 1)
+    }
     time_label.setFlag(SpriteFlag.RelativeToCamera, true)
     time_label.z = 20
     time_label.top = 4
@@ -294,6 +299,7 @@ function open_debug_menu () {
     }
     in_menu = true
     menu_debug = miniMenu.createMenu(
+    miniMenu.createMenuItem("Close"),
     miniMenu.createMenuItem("Give lots of seeds"),
     miniMenu.createMenuItem("Overfill watering can"),
     miniMenu.createMenuItem("Reset day clock"),
@@ -319,9 +325,9 @@ function open_debug_menu () {
     menu_debug.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Foreground, images.colorBlock(12))
     menu_debug.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Background, images.colorBlock(13))
     menu_debug.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
-    menu_debug.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, images.colorBlock(12))
+    menu_debug.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, images.colorBlock(11))
     menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
-    menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Background, images.colorBlock(11))
+    menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Background, images.colorBlock(12))
     menu_debug.onButtonPressed(controller.A, function (selection, selectedIndex) {
     	
     })
