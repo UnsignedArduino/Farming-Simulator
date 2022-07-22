@@ -328,13 +328,24 @@ function open_debug_menu () {
     menu_debug.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, images.colorBlock(11))
     menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
     menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Background, images.colorBlock(12))
+    menu_debug.setButtonEventsEnabled(false)
     menu_debug.onButtonPressed(controller.A, function (selection, selectedIndex) {
-    	
+        if (selectedIndex == 0) {
+            menu_debug.destroy()
+            enable_movement(true)
+            in_menu = false
+        }
     })
     menu_debug.onButtonPressed(controller.B, function (selection, selectedIndex) {
         menu_debug.destroy()
         enable_movement(true)
         in_menu = false
+    })
+    timer.background(function () {
+        while (controller.A.isPressed()) {
+            pause(0)
+        }
+        menu_debug.setButtonEventsEnabled(true)
     })
 }
 function update_action_label () {
