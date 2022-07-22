@@ -654,7 +654,7 @@ function on_day_start () {
         while (!(controller.anyButton.isPressed())) {
             pause(0)
         }
-        if (!(in_inventory)) {
+        if (!(in_inventory) && !(in_menu)) {
             enable_movement(true)
         }
         characterAnimations.clearCharacterState(the_player)
