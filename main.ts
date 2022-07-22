@@ -157,7 +157,11 @@ controller.right.onEvent(ControllerButtonEvent.Repeated, function () {
 })
 function load_environment_outside () {
     scene.setBackgroundColor(7)
-    tiles.setCurrentTilemap(tilemap`outside`)
+    if (DEBUG_tilemap) {
+        tiles.setCurrentTilemap(tilemap`outside_debug`)
+    } else {
+        tiles.setCurrentTilemap(tilemap`outside`)
+    }
     scene.cameraFollowSprite(the_player)
     the_house = sprites.create(assets.image`house`, SpriteKind.House)
     tiles.placeOnTile(the_house, tiles.getTilesByType(assets.tile`house`)[0])
@@ -590,6 +594,8 @@ let item: Inventory.Item = null
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
+let DEBUG_tilemap = false
+DEBUG_tilemap = true
 stats.turnStats(true)
 color.setPalette(
 color.Black
