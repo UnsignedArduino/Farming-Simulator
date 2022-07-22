@@ -31,13 +31,13 @@ function do_action () {
         tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`wet_dirt`)
         change_watering_can_fill(-10)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Potato")) {
-    	
+        change_stackable_item_count(-1)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Carrot seed")) {
-    	
+        change_stackable_item_count(-1)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Beetroot seed")) {
-    	
+        change_stackable_item_count(-1)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Lettuce seed")) {
-    	
+        change_stackable_item_count(-1)
     }
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -130,6 +130,19 @@ controller.up.onEvent(ControllerButtonEvent.Repeated, function () {
         move_up_in_inventory_toolbar()
     }
 })
+function change_stackable_item_count (by: number) {
+    item = toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)]
+    if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+        item.set_text(ItemTextAttribute.Tooltip, "1")
+    }
+    item.set_text(ItemTextAttribute.Tooltip, "" + (parseFloat(item.get_text(ItemTextAttribute.Tooltip)) + by))
+    if (item.get_text(ItemTextAttribute.Tooltip) == "1") {
+        item.set_text(ItemTextAttribute.Tooltip, "")
+    } else if (item.get_text(ItemTextAttribute.Tooltip) == "0") {
+        toolbar.get_items().removeAt(toolbar.get_number(ToolbarNumberAttribute.SelectedIndex))
+    }
+    toolbar.update()
+}
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         handle_a_key_in_inventory_toolbar()
@@ -416,6 +429,9 @@ function get_watering_can_fill () {
     if (!(is_name_of_selected_item("Watering can"))) {
         return 0
     }
+    return parseFloat(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)].get_text(ItemTextAttribute.Tooltip))
+}
+function get_stackable_item_count () {
     return parseFloat(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)].get_text(ItemTextAttribute.Tooltip))
 }
 function handle_menu_key_in_inventory_toolbar () {
