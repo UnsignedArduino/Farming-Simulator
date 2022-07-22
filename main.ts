@@ -11,6 +11,7 @@ function do_action () {
     sprites.castle.tileGrass2
     ]) && is_name_of_selected_item("Shovel")) {
         tiles.setTileAt(the_cursor.tilemapLocation(), sprites.castle.tilePath5)
+        remove_decoration([the_cursor.tilemapLocation()])
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`stump`) && is_name_of_selected_item("Axe")) {
         tiles.setTileAt(the_cursor.tilemapLocation(), sprites.castle.tilePath5)
         tiles.setWallAt(the_cursor.tilemapLocation(), false)
@@ -136,6 +137,13 @@ function animate_sprite (sprite: Sprite, _static: Image, static_condition: numbe
     0,
     static_condition
     )
+}
+function remove_decoration (loc_in_list: any[]) {
+    for (let the_decoration of sprites.allOfKind(SpriteKind.Decoration)) {
+        if (same_locations([loc_in_list[0], the_decoration.tilemapLocation()])) {
+            the_decoration.destroy()
+        }
+    }
 }
 controller.right.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
@@ -363,6 +371,19 @@ controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
         do_action()
     }
 })
+function same_locations (locs_in_list: any[]) {
+    col = locs_in_list[0].column
+    row = locs_in_list[0].row
+    for (let location of locs_in_list) {
+        if (col != location.column) {
+            return false
+        }
+        if (row != location.row) {
+            return false
+        }
+    }
+    return true
+}
 function get_watering_can_fill () {
     if (!(is_name_of_selected_item("Watering can"))) {
         return 0
@@ -538,6 +559,8 @@ let formatted_minutes_today = 0
 let formatted_hours_today = 0
 let last_inventory_select = 0
 let last_toolbar_select = 0
+let row = 0
+let col = 0
 let screen_shader: Sprite = null
 let label = ""
 let cursor_in_inventory = false
