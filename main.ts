@@ -638,6 +638,10 @@ stats.turnStats(true)
 color.setPalette(
 color.Black
 )
+let potato_stages = [assets.tile`tilled_wet_dirt_with_potato_1`, assets.tile`tilled_wet_dirt_with_potato_2`]
+let carrot_stages = [assets.tile`tilled_wet_dirt_with_carrot_1`, assets.tile`tilled_wet_dirt_with_carrot_2`]
+let beetroot_stages = [assets.tile`tilled_wet_dirt_with_beetroot_1`, assets.tile`tilled_wet_dirt_with_beetroot_2`]
+let lettuce_stages = [assets.tile`tilled_wet_dirt_with_lettuce_1`, assets.tile`tilled_wet_dirt_with_lettuce_2`]
 make_player()
 load_environment_outside()
 make_inventory_toolbar()
