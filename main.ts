@@ -3,6 +3,11 @@ namespace SpriteKind {
     export const Decoration = SpriteKind.create()
     export const TileCursor = SpriteKind.create()
 }
+function create_item_with_tooltip (name: string, image2: Image, tooltip: string) {
+    item = Inventory.create_item(name, image2)
+    item.set_text(ItemTextAttribute.Tooltip, tooltip)
+    return item
+}
 function do_action () {
     if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [
     assets.tile`grass`,
@@ -203,9 +208,12 @@ function give_starting_items () {
     inventory.get_items().push(Inventory.create_item("Axe", assets.image`axe`))
     inventory.get_items().push(Inventory.create_item("Shovel", assets.image`shovel`))
     inventory.get_items().push(Inventory.create_item("Hoe", assets.image`hoe`))
-    item = Inventory.create_item("Watering can", assets.image`watering_can`)
-    item.set_text(ItemTextAttribute.Tooltip, "0%")
-    inventory.get_items().push(item)
+    inventory.get_items().push(create_item_with_tooltip("Watering can", assets.image`watering_can`, "0%"))
+    seed_rng = Random.createRNG(3)
+    inventory.get_items().push(create_item_with_tooltip("Potato", assets.image`potato`, "" + seed_rng.randomRange(5, 10)))
+    inventory.get_items().push(create_item_with_tooltip("Carrot seed", assets.image`carrot_seed`, "" + seed_rng.randomRange(5, 10)))
+    inventory.get_items().push(create_item_with_tooltip("Beetroot seed", assets.image`beetroot_seed`, "" + seed_rng.randomRange(5, 10)))
+    inventory.get_items().push(create_item_with_tooltip("Lettuce seed", assets.image`lettuce_seed`, "" + seed_rng.randomRange(5, 10)))
 }
 function place_decoration (image2: Image, location_in_list: any[], shift_tiles_up: number, can_go_through: boolean) {
     if (can_go_through) {
@@ -565,11 +573,11 @@ let screen_shader: Sprite = null
 let label = ""
 let cursor_in_inventory = false
 let the_decoration: Sprite = null
+let seed_rng: FastRandomBlocks = null
 let inventory: Inventory.Inventory = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let action_label: TextSprite = null
-let item: Inventory.Item = null
 let last_time = 0
 let time_label: TextSprite = null
 let toolbar: Inventory.Toolbar = null
@@ -578,6 +586,7 @@ let can_use = false
 let the_player: Sprite = null
 let in_inventory = false
 let the_cursor: Sprite = null
+let item: Inventory.Item = null
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
