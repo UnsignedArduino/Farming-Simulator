@@ -130,6 +130,30 @@
         "tilemapTile": true,
         "displayName": "tilled_wet_dirt_with_potato_3"
     },
+    "tile22": {
+        "data": "hwQQABAAAADu7u7u7h7B7u7O7O7uHsHu7u7s5+zuzu4ed+x+597M7h7h59581+zu7sd+1+feHO7ufufe7O7s7u7O7M7u7uzu5+7szu7O7O5+3uzO7s7u7u7X7H7uzuzuft7sznfu7O7n7uzH7nfN7r7O7H537s3u7s7u5+zu7r7u7u7u7O7u7g==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "tilled_wet_dirt_with_potato_4"
+    },
+    "tile23": {
+        "data": "hwQQABAAAADu7u7u7h7B7u7O7O7uHsHu7u7s7uzuzu4e4edO7O7M7h7BfEfs7uzu7s7nTuzuHO7nxO7u7O7s7n7E7M7u7uzu50TsfufE7O7uvuzOfsTu7u6+58TnxOzu7u58xO7u7O7u7ufE7u7L7r7O7M7s7s7u7s7u7uzu7r7u7u7u7O7u7g==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "tilled_wet_dirt_with_carrot_4"
+    },
+    "tile24": {
+        "data": "hwQQABAAAADu7u7u7h7B7u7O7O7uHsHu7nfsLuzuzu4e4Xcn7O7M7h5x7C7s7uzu7s7u7uzuHO7uzu7u7O7s7u7O7M7u7uzu7u7sx+7C7O7uvud+d8Lu7u6+fMfuwuzufufswu7u7O7ufnfC7u7L7r7n7MLs7s7u7s7u7uzu7r7u7u7u7O7u7g==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "tilled_wet_dirt_with_beetroot_4"
+    },
+    "tile25": {
+        "data": "hwQQABAAAADu7u7u7h7B7u7OfOfuHsHu7u53d+zuzu4e4Xd37O7M7h7Bd3fs7uzu7s53d+zuHO7uznd3fOfs7u7OfMd3d+zu7u7sfnfH7O7uvux+d8fu7u6+7H53x+zu7u7sfnd37O7u7uzOd3fL7r7O7M5+587u7s7u7uzu7r7u7u7u7O7u7g==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "tilled_wet_dirt_with_lettuce_4"
+    },
     "level2": {
         "id": "level2",
         "mimeType": "application/mkcd-tilemap",
@@ -193,8 +217,11 @@
             "sprites.builtin.forestTiles0",
             "myTiles.tile8",
             "myTiles.tile9",
-            "myTiles.tile14",
-            "myTiles.tile18"
+            "myTiles.tile21",
+            "myTiles.tile22",
+            "myTiles.tile23",
+            "myTiles.tile24",
+            "myTiles.tile25"
         ],
         "displayName": "outside_debug"
     },

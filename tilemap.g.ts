@@ -44,6 +44,14 @@ namespace myTiles {
     export const tile14 = image.ofBuffer(hex``);
     //% fixedInstance jres blockIdentity=images._tile
     export const tile18 = image.ofBuffer(hex``);
+    //% fixedInstance jres blockIdentity=images._tile
+    export const tile22 = image.ofBuffer(hex``);
+    //% fixedInstance jres blockIdentity=images._tile
+    export const tile23 = image.ofBuffer(hex``);
+    //% fixedInstance jres blockIdentity=images._tile
+    export const tile24 = image.ofBuffer(hex``);
+    //% fixedInstance jres blockIdentity=images._tile
+    export const tile25 = image.ofBuffer(hex``);
 
     helpers._registerFactory("tilemap", function(name: string) {
         switch(helpers.stringTrim(name)) {
@@ -150,7 +158,7 @@ namespace myTiles {
 ..................................................
 ..................................................
 ..................................................
-`, [myTiles.transparency16,myTiles.tile1,myTiles.tile2,myTiles.tile3,myTiles.tile6,myTiles.tile4,myTiles.tile7,sprites.castle.tilePath1,sprites.castle.tilePath4,sprites.castle.tilePath3,sprites.castle.tilePath6,sprites.castle.tilePath5,sprites.builtin.forestTiles0,myTiles.tile8,myTiles.tile9,myTiles.tile14,myTiles.tile18], TileScale.Sixteen);
+`, [myTiles.transparency16,myTiles.tile1,myTiles.tile2,myTiles.tile3,myTiles.tile6,myTiles.tile4,myTiles.tile7,sprites.castle.tilePath1,sprites.castle.tilePath4,sprites.castle.tilePath3,sprites.castle.tilePath6,sprites.castle.tilePath5,sprites.builtin.forestTiles0,myTiles.tile8,myTiles.tile9,myTiles.tile21,myTiles.tile22,myTiles.tile23,myTiles.tile24,myTiles.tile25], TileScale.Sixteen);
         }
         return null;
     })
@@ -200,6 +208,14 @@ namespace myTiles {
             case "tile14":return tile14;
             case "tilled_wet_dirt_with_potato_3":
             case "tile18":return tile18;
+            case "tilled_wet_dirt_with_potato_4":
+            case "tile22":return tile22;
+            case "tilled_wet_dirt_with_carrot_4":
+            case "tile23":return tile23;
+            case "tilled_wet_dirt_with_beetroot_4":
+            case "tile24":return tile24;
+            case "tilled_wet_dirt_with_lettuce_4":
+            case "tile25":return tile25;
         }
         return null;
     })
