@@ -31,12 +31,16 @@ function do_action () {
         tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`wet_dirt`)
         change_watering_can_fill(-10)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Potato")) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt_with_potato_1`)
         change_stackable_item_count(-1)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Carrot seed")) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt_with_carrot_1`)
         change_stackable_item_count(-1)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Beetroot seed")) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt_with_beetroot_1`)
         change_stackable_item_count(-1)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Lettuce seed")) {
+        tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt_with_lettuce_1`)
         change_stackable_item_count(-1)
     }
 }
