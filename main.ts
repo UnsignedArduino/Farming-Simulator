@@ -464,7 +464,17 @@ function open_debug_menu () {
             tick_plant(beetroot_stages, -100)
             tick_plant(lettuce_stages, -100)
         } else if (selectedIndex == 8) {
-        	
+            for (let tile of fully_grown_tiles) {
+                for (let location of tiles.getTilesByType(tile)) {
+                    for (let index = 0; index < randint(1, 2); index++) {
+                        give_player_seed_of(tile_to_vegetable_name([location]))
+                    }
+                    for (let index = 0; index < randint(2, 4); index++) {
+                        give_player_crop_of(tile_to_vegetable_name([location]))
+                    }
+                    tiles.setTileAt(location, assets.tile`tilled_wet_dirt`)
+                }
+            }
         } else if (selectedIndex == 9) {
         	
         } else if (selectedIndex == 10) {
