@@ -53,9 +53,16 @@ function do_action () {
     } else if (is_name_of_selected_item("Debug menu")) {
         open_debug_menu()
     } else if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], non_fully_grown) && is_name_of_selected_item("Hoe")) {
-    	
+        give_player_seed_of(tile_to_vegetable_name([the_cursor.tilemapLocation()]))
+        tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`)
     } else if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], fully_grown_tiles) && is_name_of_selected_item("Hoe")) {
-    	
+        for (let index = 0; index < randint(1, 2); index++) {
+            give_player_seed_of(tile_to_vegetable_name([the_cursor.tilemapLocation()]))
+        }
+        for (let index = 0; index < randint(2, 4); index++) {
+            give_player_crop_of(tile_to_vegetable_name([the_cursor.tilemapLocation()]))
+        }
+        tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`)
     }
 }
 function tile_to_vegetable_name (loc_in_list: any[]) {
