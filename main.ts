@@ -46,6 +46,12 @@ function do_action () {
         open_debug_menu()
     }
 }
+function tick_time () {
+    tick_plant(potato_stages, potato_next_stage_chance)
+    tick_plant(carrot_stages, carrot_next_stage_chance)
+    tick_plant(beetroot_stages, beetroot_next_stage_chance)
+    tick_plant(lettuce_stages, lettuce_next_stage_chance)
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         move_up_in_inventory_toolbar()
@@ -334,6 +340,28 @@ function open_debug_menu () {
             menu_debug.destroy()
             enable_movement(true)
             in_menu = false
+        } else if (selectedIndex == 1) {
+        	
+        } else if (selectedIndex == 2) {
+        	
+        } else if (selectedIndex == 3) {
+        	
+        } else if (selectedIndex == 4) {
+        	
+        } else if (selectedIndex == 5) {
+            tick_time()
+        } else if (selectedIndex == 6) {
+        	
+        } else if (selectedIndex == 7) {
+        	
+        } else if (selectedIndex == 8) {
+        	
+        } else if (selectedIndex == 9) {
+        	
+        } else if (selectedIndex == 10) {
+        	
+        } else if (selectedIndex == 11) {
+        	
         }
     })
     menu_debug.onButtonPressed(controller.B, function (selection, selectedIndex) {
@@ -442,6 +470,15 @@ function change_watering_can_fill (by: number) {
         item.set_text(ItemTextAttribute.Tooltip, "" + item.get_text(ItemTextAttribute.Tooltip) + "%")
     }
     toolbar.update()
+}
+function tick_plant (stages: any[], percent_chance: number) {
+    for (let index = 0; index <= stages.length - 2; index++) {
+        for (let location of tiles.getTilesByType(stages[stages.length - 2 - index])) {
+            if (Math.percentChance(percent_chance)) {
+                tiles.setTileAt(location, stages[stages.length - 2 - index + 1])
+            }
+        }
+    }
 }
 controller.down.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
@@ -613,6 +650,7 @@ function on_day_end () {
     fade(true, true)
     scene.followPath(the_player, scene.aStar(the_player.tilemapLocation(), the_player.tilemapLocation()), 0)
     screen_shade(-1)
+    tick_time()
 }
 function on_1_hour_before_day_end () {
     screen_shade(shader.ShadeLevel.One)
@@ -716,6 +754,14 @@ let item: Inventory.Item = null
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
+let lettuce_next_stage_chance = 0
+let lettuce_stages: Image[] = []
+let beetroot_next_stage_chance = 0
+let beetroot_stages: Image[] = []
+let carrot_next_stage_chance = 0
+let carrot_stages: Image[] = []
+let potato_next_stage_chance = 0
+let potato_stages: Image[] = []
 let DEBUG_menu = false
 let DEBUG_tilemap = false
 DEBUG_tilemap = true
@@ -724,34 +770,34 @@ stats.turnStats(true)
 color.setPalette(
 color.Black
 )
-let potato_stages = [
+potato_stages = [
 assets.tile`tilled_wet_dirt_with_potato_1`,
 assets.tile`tilled_wet_dirt_with_potato_2`,
 assets.tile`tilled_wet_dirt_with_potato_3`,
 assets.tile`tilled_wet_dirt_with_potato_4`
 ]
-let potato_next_stage_chance = 40
-let carrot_stages = [
+potato_next_stage_chance = 40
+carrot_stages = [
 assets.tile`tilled_wet_dirt_with_carrot_1`,
 assets.tile`tilled_wet_dirt_with_carrot_2`,
 assets.tile`tilled_wet_dirt_with_carrot_3`,
 assets.tile`tilled_wet_dirt_with_carrot_4`
 ]
-let carrot_next_stage_chance = 50
-let beetroot_stages = [
+carrot_next_stage_chance = 50
+beetroot_stages = [
 assets.tile`tilled_wet_dirt_with_beetroot_1`,
 assets.tile`tilled_wet_dirt_with_beetroot_2`,
 assets.tile`tilled_wet_dirt_with_beetroot_3`,
 assets.tile`tilled_wet_dirt_with_beetroot_4`
 ]
-let beetroot_next_stage_chance = 60
-let lettuce_stages = [
+beetroot_next_stage_chance = 60
+lettuce_stages = [
 assets.tile`tilled_wet_dirt_with_lettuce_1`,
 assets.tile`tilled_wet_dirt_with_lettuce_2`,
 assets.tile`tilled_wet_dirt_with_lettuce_3`,
 assets.tile`tilled_wet_dirt_with_lettuce_4`
 ]
-let lettuce_next_stage_chance = 70
+lettuce_next_stage_chance = 70
 make_player()
 load_environment_outside()
 make_inventory_toolbar()
