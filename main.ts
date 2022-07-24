@@ -58,6 +58,29 @@ function do_action () {
     	
     }
 }
+function tile_to_vegetable_name (loc_in_list: any[]) {
+    for (let tile of potato_stages) {
+        if (tiles.tileAtLocationEquals(loc_in_list[0], tile)) {
+            return "potato"
+        }
+    }
+    for (let tile of carrot_stages) {
+        if (tiles.tileAtLocationEquals(loc_in_list[0], tile)) {
+            return "carrot"
+        }
+    }
+    for (let tile of beetroot_stages) {
+        if (tiles.tileAtLocationEquals(loc_in_list[0], tile)) {
+            return "beetroot"
+        }
+    }
+    for (let tile of lettuce_stages) {
+        if (tiles.tileAtLocationEquals(loc_in_list[0], tile)) {
+            return "lettuce"
+        }
+    }
+    return "unknown"
+}
 function tick_time () {
     tick_plant(potato_stages, potato_next_stage_chance)
     tick_plant(carrot_stages, carrot_next_stage_chance)
@@ -220,6 +243,17 @@ function animate_sprite (sprite: Sprite, _static: Image, static_condition: numbe
     0,
     static_condition
     )
+}
+function give_player_seed_of (name: string) {
+    if (name == "potato") {
+        add_item([Inventory.create_item("Potato", assets.image`potato`)])
+    } else if (name == "carrot") {
+        add_item([Inventory.create_item("Carrot seed", assets.image`carrot_seed`)])
+    } else if (name == "beetroot") {
+        add_item([Inventory.create_item("Beetroot seed", assets.image`beetroot_seed`)])
+    } else if (name == "lettuce") {
+        add_item([Inventory.create_item("Lettuce seed", assets.image`lettuce_seed`)])
+    }
 }
 function change_stackable_item_count_name (name: string, by: number) {
     item = get_stackable_item_name(name)
@@ -526,6 +560,17 @@ function change_watering_can_fill (by: number) {
     }
     toolbar.update()
     inventory.update()
+}
+function give_player_crop_of (name: string) {
+    if (name == "potato") {
+        add_item([Inventory.create_item("Potato", assets.image`potato`)])
+    } else if (name == "carrot") {
+        add_item([Inventory.create_item("Carrot", assets.image`carrot`)])
+    } else if (name == "beetroot") {
+        add_item([Inventory.create_item("Beetroot", assets.image`beetroot`)])
+    } else if (name == "lettuce") {
+        add_item([Inventory.create_item("Lettuce", assets.image`lettuce`)])
+    }
 }
 function tick_plant (stages: any[], percent_chance: number) {
     for (let index = 0; index <= stages.length - 2; index++) {

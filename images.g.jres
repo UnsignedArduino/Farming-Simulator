@@ -109,6 +109,21 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "popup_debug_menu"
     },
+    "image22": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAREQAAAAAAEBEBAAAAABAREQAAAAAAEREBAAAAABEREQEAAAAAEBERAAAAABwd0QEAAAAAAB3RAAAAAAAAAdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "carrot"
+    },
+    "image23": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAHAHAAAAAAAAcHcHACACAAB3AHd3IiIAAHd3dwAiIgAAdwcHACACAABwdwAAAAAAAHB3BwAgAgAAdwd3dyIiAAB3dwcAIiIAAHd3AAAgAgAAdwcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "beetroot"
+    },
+    "image24": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB3BwAAAAAAcHd3AAAAAABwd3cHAAAAAHd3dwcAAAAAd3d3BwAAAAB3d3cHAAAAAHd3dwcAAAAAd3d3BwAAAAB3d3cHAAAAAHB3dwcAAAAAcHd3AAAAAAAAdwcAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "lettuce"
+    },
     "anim1": {
         "namespace": "myAnimations",
         "id": "anim1",
