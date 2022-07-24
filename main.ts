@@ -63,6 +63,13 @@ function tick_time () {
     tick_plant(carrot_stages, carrot_next_stage_chance)
     tick_plant(beetroot_stages, beetroot_next_stage_chance)
     tick_plant(lettuce_stages, lettuce_next_stage_chance)
+    for (let index = 0; index <= degradation_path.length - 2; index++) {
+        for (let location of tiles.getTilesByType(degradation_path[degradation_path.length - 2 - index])) {
+            if (Math.percentChance(degradation_chances[degradation_path.length - 2 - index])) {
+                tiles.setTileAt(location, degradation_path[degradation_path.length - 1 - index])
+            }
+        }
+    }
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
@@ -819,6 +826,8 @@ let item: Inventory.Item = null
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
+let degradation_chances: number[] = []
+let degradation_path: Image[] = []
 let fully_grown_tiles: Image[] = []
 let non_fully_grown: Image[] = []
 let lettuce_next_stage_chance = 0
@@ -884,6 +893,8 @@ carrot_stages[carrot_stages.length - 1],
 beetroot_stages[beetroot_stages.length - 1],
 lettuce_stages[lettuce_stages.length - 1]
 ]
+degradation_path = [assets.tile`wet_dirt`, sprites.castle.tilePath5, assets.tile`grass`]
+degradation_chances = [20, 30, 0]
 make_player()
 load_environment_outside()
 make_inventory_toolbar()
