@@ -454,9 +454,15 @@ function open_debug_menu () {
         } else if (selectedIndex == 5) {
             tick_time()
         } else if (selectedIndex == 6) {
-        	
+            tick_plant(potato_stages, 100)
+            tick_plant(carrot_stages, 100)
+            tick_plant(beetroot_stages, 100)
+            tick_plant(lettuce_stages, 100)
         } else if (selectedIndex == 7) {
-        	
+            tick_plant(potato_stages, -100)
+            tick_plant(carrot_stages, -100)
+            tick_plant(beetroot_stages, -100)
+            tick_plant(lettuce_stages, -100)
         } else if (selectedIndex == 8) {
         	
         } else if (selectedIndex == 9) {
@@ -580,10 +586,20 @@ function give_player_crop_of (name: string) {
     }
 }
 function tick_plant (stages: any[], percent_chance: number) {
-    for (let index = 0; index <= stages.length - 2; index++) {
-        for (let location of tiles.getTilesByType(stages[stages.length - 2 - index])) {
-            if (Math.percentChance(percent_chance)) {
-                tiles.setTileAt(location, stages[stages.length - 2 - index + 1])
+    if (percent_chance < 0) {
+        for (let index = 0; index <= stages.length - 1; index++) {
+            for (let location of tiles.getTilesByType(stages[index])) {
+                if (Math.percentChance(Math.abs(percent_chance))) {
+                    tiles.setTileAt(location, stages[Math.max(index - 1, 0)])
+                }
+            }
+        }
+    } else {
+        for (let index = 0; index <= stages.length - 1; index++) {
+            for (let location of tiles.getTilesByType(stages[stages.length - 1 - index])) {
+                if (Math.percentChance(percent_chance)) {
+                    tiles.setTileAt(location, stages[Math.min(stages.length - 1 - index + 1, stages.length - 1)])
+                }
             }
         }
     }
