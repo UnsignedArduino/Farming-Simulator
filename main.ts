@@ -8,6 +8,14 @@ function create_item_with_tooltip (name: string, image2: Image, tooltip: string)
     item.set_text(ItemTextAttribute.Tooltip, tooltip)
     return item
 }
+function get_stackable_item_count_name (name: string) {
+    item = get_stackable_item_name(name)
+    if (item) {
+        return parseFloat(item.get_text(ItemTextAttribute.Tooltip))
+    } else {
+        return [][0]
+    }
+}
 function do_action () {
     if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [
     assets.tile`grass`,
@@ -166,6 +174,19 @@ function change_stackable_item_count (by: number) {
     }
     toolbar.update()
 }
+function get_stackable_item_name (name: string) {
+    for (let item of toolbar.get_items()) {
+        if (item.get_text(ItemTextAttribute.Name) == name) {
+            return item
+        }
+    }
+    for (let item of inventory.get_items()) {
+        if (item.get_text(ItemTextAttribute.Name) == name) {
+            return item
+        }
+    }
+    return [][0]
+}
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         handle_a_key_in_inventory_toolbar()
@@ -188,6 +209,20 @@ function animate_sprite (sprite: Sprite, _static: Image, static_condition: numbe
     0,
     static_condition
     )
+}
+function change_stackable_item_count_name (name: string, by: number) {
+    item = get_stackable_item_name(name)
+    if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+        item.set_text(ItemTextAttribute.Tooltip, "1")
+    }
+    item.set_text(ItemTextAttribute.Tooltip, "" + (parseFloat(item.get_text(ItemTextAttribute.Tooltip)) + by))
+    if (item.get_text(ItemTextAttribute.Tooltip) == "1") {
+        item.set_text(ItemTextAttribute.Tooltip, "")
+    } else if (item.get_text(ItemTextAttribute.Tooltip) == "0") {
+        toolbar.get_items().removeAt(toolbar.get_number(ToolbarNumberAttribute.SelectedIndex))
+    }
+    toolbar.update()
+    inventory.update()
 }
 function remove_decoration (loc_in_list: any[]) {
     for (let the_decoration of sprites.allOfKind(SpriteKind.Decoration)) {
@@ -282,6 +317,15 @@ function place_decoration (image2: Image, location_in_list: any[], shift_tiles_u
         tiles.setWallAt(location_in_list[0], true)
     }
 }
+function set_watering_can_fill (_new: number) {
+    item = get_stackable_item_name("Watering can")
+    item.set_text(ItemTextAttribute.Tooltip, "" + _new)
+    if (item.get_text(ItemTextAttribute.Tooltip).length < 3) {
+        item.set_text(ItemTextAttribute.Tooltip, "" + item.get_text(ItemTextAttribute.Tooltip) + "%")
+    }
+    toolbar.update()
+    inventory.update()
+}
 function move_down_in_inventory_toolbar () {
     if (cursor_in_inventory) {
         if (inventory.get_number(InventoryNumberAttribute.SelectedIndex) < inventory.get_items().length - 8) {
@@ -306,8 +350,8 @@ function open_debug_menu () {
     in_menu = true
     menu_debug = miniMenu.createMenu(
     miniMenu.createMenuItem("Close"),
-    miniMenu.createMenuItem("Give lots of seeds"),
-    miniMenu.createMenuItem("Overfill watering can"),
+    miniMenu.createMenuItem("Set seed count to 500"),
+    miniMenu.createMenuItem("Set watering can fill to 500"),
     miniMenu.createMenuItem("Reset day clock"),
     miniMenu.createMenuItem("Go to end of day"),
     miniMenu.createMenuItem("Tick plants"),
@@ -341,13 +385,20 @@ function open_debug_menu () {
             enable_movement(true)
             in_menu = false
         } else if (selectedIndex == 1) {
-        	
+            set_stackable_item_count_name("Potato", 500)
+            set_stackable_item_count_name("Carrot seed", 500)
+            set_stackable_item_count_name("Beetroot seed", 500)
+            set_stackable_item_count_name("Lettuce seed", 500)
         } else if (selectedIndex == 2) {
-        	
+            set_watering_can_fill(500)
         } else if (selectedIndex == 3) {
-        	
+            secs_left_in_day = 86400 - 8 * 3600
+            secs_elapsed_today = 8 * 3600
         } else if (selectedIndex == 4) {
-        	
+            secs_left_in_day = 4 * 3600
+            secs_elapsed_today = 86400 - 4 * 3600
+            menu_debug.destroy()
+            in_menu = false
         } else if (selectedIndex == 5) {
             tick_time()
         } else if (selectedIndex == 6) {
@@ -461,15 +512,13 @@ function make_player () {
     animate_sprite(the_player, assets.animation`player_walk_left`[1], characterAnimations.rule(Predicate.FacingLeft, Predicate.NotMoving), assets.animation`player_walk_left`, characterAnimations.rule(Predicate.MovingLeft))
 }
 function change_watering_can_fill (by: number) {
-    if (!(is_name_of_selected_item("Watering can"))) {
-        return
-    }
-    item = toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)]
+    item = get_stackable_item_name("Watering can")
     item.set_text(ItemTextAttribute.Tooltip, "" + Math.constrain(parseFloat(item.get_text(ItemTextAttribute.Tooltip)) + by, 0, 100))
     if (item.get_text(ItemTextAttribute.Tooltip).length < 3) {
         item.set_text(ItemTextAttribute.Tooltip, "" + item.get_text(ItemTextAttribute.Tooltip) + "%")
     }
     toolbar.update()
+    inventory.update()
 }
 function tick_plant (stages: any[], percent_chance: number) {
     for (let index = 0; index <= stages.length - 2; index++) {
@@ -548,11 +597,19 @@ function same_locations (locs_in_list: any[]) {
     }
     return true
 }
-function get_watering_can_fill () {
-    if (!(is_name_of_selected_item("Watering can"))) {
-        return 0
+function set_stackable_item_count_name (name: string, _new: number) {
+    item = get_stackable_item_name(name)
+    item.set_text(ItemTextAttribute.Tooltip, "" + _new)
+    if (item.get_text(ItemTextAttribute.Tooltip) == "1") {
+        item.set_text(ItemTextAttribute.Tooltip, "")
+    } else if (item.get_text(ItemTextAttribute.Tooltip) == "0") {
+        toolbar.get_items().removeAt(toolbar.get_number(ToolbarNumberAttribute.SelectedIndex))
     }
-    return parseFloat(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)].get_text(ItemTextAttribute.Tooltip))
+    toolbar.update()
+    inventory.update()
+}
+function get_watering_can_fill () {
+    return parseFloat(get_stackable_item_name("Watering can").get_text(ItemTextAttribute.Tooltip))
 }
 function get_stackable_item_count () {
     return parseFloat(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)].get_text(ItemTextAttribute.Tooltip))
@@ -737,9 +794,9 @@ let menu_debug: miniMenu.MenuSprite = null
 let cursor_in_inventory = false
 let the_decoration: Sprite = null
 let seed_rng: FastRandomBlocks = null
-let inventory: Inventory.Inventory = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
+let inventory: Inventory.Inventory = null
 let action_label: TextSprite = null
 let in_menu = false
 let last_time = 0
