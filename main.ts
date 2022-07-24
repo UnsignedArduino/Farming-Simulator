@@ -17,7 +17,7 @@ function get_stackable_item_count_name (name: string) {
     }
 }
 function do_action () {
-    if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [
+    if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], [
     assets.tile`grass`,
     sprites.castle.tileGrass1,
     sprites.castle.tileGrass3,
@@ -30,7 +30,7 @@ function do_action () {
         tiles.setWallAt(the_cursor.tilemapLocation(), false)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`wet_dirt`) && is_name_of_selected_item("Hoe")) {
         tiles.setTileAt(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`)
-    } else if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
+    } else if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
         tiles.setTileAt(the_cursor.tilemapLocation(), sprites.castle.tilePath5)
         tiles.setWallAt(the_cursor.tilemapLocation(), false)
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`water`) && is_name_of_selected_item("Watering can") && get_watering_can_fill() < 100) {
@@ -52,6 +52,10 @@ function do_action () {
         change_stackable_item_count(-1)
     } else if (is_name_of_selected_item("Debug menu")) {
         open_debug_menu()
+    } else if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], non_fully_grown) && is_name_of_selected_item("Hoe")) {
+    	
+    } else if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], fully_grown_tiles) && is_name_of_selected_item("Hoe")) {
+    	
     }
 }
 function tick_time () {
@@ -428,7 +432,7 @@ function open_debug_menu () {
     })
 }
 function update_action_label () {
-    if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [
+    if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], [
     assets.tile`grass`,
     sprites.castle.tileGrass1,
     sprites.castle.tileGrass3,
@@ -439,22 +443,26 @@ function update_action_label () {
         label = "Remove stump"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`wet_dirt`) && is_name_of_selected_item("Hoe")) {
         label = "Till dirt"
-    } else if (tile_at_loc_is_one_off([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
+    } else if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], [sprites.castle.rock0, sprites.castle.rock1]) && is_name_of_selected_item("Pickaxe")) {
         label = "Remove rock"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`water`) && is_name_of_selected_item("Watering can") && get_watering_can_fill() < 100) {
         label = "Fill watering can"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), sprites.castle.tilePath5) && is_name_of_selected_item("Watering can") && get_watering_can_fill() >= 10) {
         label = "Water dirt"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Potato")) {
-        label = "Plant potato"
+        label = "Plant seed"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Carrot seed")) {
-        label = "Plant carrot seed"
+        label = "Plant seed"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Beetroot seed")) {
-        label = "Plant beetroot seed"
+        label = "Plant seed"
     } else if (tiles.tileAtLocationEquals(the_cursor.tilemapLocation(), assets.tile`tilled_wet_dirt`) && is_name_of_selected_item("Lettuce seed")) {
-        label = "Plant lettuce seed"
+        label = "Plant seed"
     } else if (is_name_of_selected_item("Debug menu")) {
         label = "Open debug menu"
+    } else if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], non_fully_grown) && is_name_of_selected_item("Hoe")) {
+        label = "Uproot plant"
+    } else if (tile_at_loc_is_one_of([the_cursor.tilemapLocation()], fully_grown_tiles) && is_name_of_selected_item("Hoe")) {
+        label = "Harvest plant"
     } else {
         label = ""
     }
@@ -467,14 +475,6 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
         move_right_in_inventory_toolbar()
     }
 })
-function tile_at_loc_is_one_off (loc_in_list: any[], tiles2: any[]) {
-    for (let tile of tiles2) {
-        if (tiles.tileAtLocationEquals(loc_in_list[0], tile)) {
-            return true
-        }
-    }
-    return false
-}
 function update_time () {
     secs_left_in_day += (game.runtime() - last_time) / 1000 * time_speed_multiplier * -1
     last_time = game.runtime()
@@ -778,6 +778,14 @@ controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
         move_left_in_inventory_toolbar()
     }
 })
+function tile_at_loc_is_one_of (loc_in_list: any[], tiles2: any[]) {
+    for (let tile of tiles2) {
+        if (tiles.tileAtLocationEquals(loc_in_list[0], tile)) {
+            return true
+        }
+    }
+    return false
+}
 function have_something_selected_in_toolbar () {
     return !(!(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)]))
 }
@@ -811,6 +819,8 @@ let item: Inventory.Item = null
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
+let fully_grown_tiles: Image[] = []
+let non_fully_grown: Image[] = []
 let lettuce_next_stage_chance = 0
 let lettuce_stages: Image[] = []
 let beetroot_next_stage_chance = 0
@@ -855,6 +865,25 @@ assets.tile`tilled_wet_dirt_with_lettuce_3`,
 assets.tile`tilled_wet_dirt_with_lettuce_4`
 ]
 lettuce_next_stage_chance = 70
+non_fully_grown = []
+for (let index = 0; index <= potato_stages.length - 2; index++) {
+    non_fully_grown.push(potato_stages[index])
+}
+for (let index = 0; index <= carrot_stages.length - 2; index++) {
+    non_fully_grown.push(carrot_stages[index])
+}
+for (let index = 0; index <= beetroot_stages.length - 2; index++) {
+    non_fully_grown.push(beetroot_stages[index])
+}
+for (let index = 0; index <= lettuce_stages.length - 2; index++) {
+    non_fully_grown.push(lettuce_stages[index])
+}
+fully_grown_tiles = [
+potato_stages[potato_stages.length - 1],
+carrot_stages[carrot_stages.length - 1],
+beetroot_stages[beetroot_stages.length - 1],
+lettuce_stages[lettuce_stages.length - 1]
+]
 make_player()
 load_environment_outside()
 make_inventory_toolbar()
