@@ -387,7 +387,14 @@ function open_sell_menu () {
             real_index += 1
         }
     }
-    menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $" + sell_price))
+    sell_price = Math.ceil(sell_price * 100) / 100
+    if (sell_price == 0) {
+        menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $0"))
+    } else if (sell_price * 100 % 10 == 0) {
+        menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $" + sell_price + "0"))
+    } else {
+        menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $" + sell_price))
+    }
     menu_sell = miniMenu.createMenuFromArray(menu_sell_options)
     for (let index = 0; index < menu_sell_last_index; index++) {
         menu_sell.moveSelection(miniMenu.MoveDirection.Down)
@@ -441,7 +448,11 @@ function open_sell_menu () {
         if (selectedIndex == 0 || selectedIndex == 1) {
         	
         } else {
-            menu_sell_selections[selectedIndex - 2] = menu_sell_selections_max[selectedIndex - 2]
+            if (menu_sell_selections[selectedIndex - 2] > 0) {
+                menu_sell_selections[selectedIndex - 2] = 0
+            } else {
+                menu_sell_selections[selectedIndex - 2] = menu_sell_selections_max[selectedIndex - 2]
+            }
             menu_sell_last_index = selectedIndex
             menu_sell.destroy()
             open_sell_menu()
@@ -660,15 +671,21 @@ function open_debug_menu () {
             tick_plant(beetroot_stages, -100)
             tick_plant(lettuce_stages, -100)
         } else if (selectedIndex == 8) {
+            menu_debug.destroy()
+            enable_movement(true)
+            in_menu = false
             for (let tile of fully_grown_tiles) {
                 for (let location of tiles.getTilesByType(tile)) {
                     for (let index = 0; index < randint(1, 2); index++) {
                         give_player_seed_of(tile_to_vegetable_name([location]))
+                        pause(0)
                     }
                     for (let index = 0; index < randint(2, 4); index++) {
                         give_player_crop_of(tile_to_vegetable_name([location]))
+                        pause(0)
                     }
                     tiles.setTileAt(location, assets.tile`tilled_wet_dirt`)
+                    pause(0)
                 }
             }
         } else if (selectedIndex == 9) {
