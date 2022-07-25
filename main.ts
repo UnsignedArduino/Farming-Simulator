@@ -398,10 +398,17 @@ function open_sell_menu () {
     menu_sell.onButtonPressed(controller.A, function (selection, selectedIndex) {
         if (selectedIndex == 0) {
             menu_sell_last_index = 0
+            menu_sell_selections = []
+            menu_sell_selections_max = []
             menu_sell.destroy()
             open_action_menu()
         } else if (selectedIndex == 1) {
-        	
+            menu_sell_selections = []
+            menu_sell_selections_max = []
+            menu_sell.destroy()
+            enable_movement(true)
+            in_menu = false
+            the_player.y += 16
         } else {
             if (menu_sell_selections[selectedIndex - 2] < menu_sell_selections_max[selectedIndex - 2]) {
                 menu_sell_selections[selectedIndex - 2] = menu_sell_selections[selectedIndex - 2] + 1
@@ -414,6 +421,8 @@ function open_sell_menu () {
     menu_sell.onButtonPressed(controller.B, function (selection, selectedIndex) {
         if (selectedIndex == 0 || selectedIndex == 1) {
             menu_sell_last_index = 0
+            menu_sell_selections = []
+            menu_sell_selections_max = []
             menu_sell.destroy()
             open_action_menu()
         } else {
