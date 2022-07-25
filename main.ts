@@ -1185,6 +1185,7 @@ let in_inventory = false
 let the_cursor: Sprite = null
 let item: Inventory.Item = null
 let day_of_the_week = 0
+let last_hour = 0
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
@@ -1204,8 +1205,8 @@ let potato_next_stage_chance = 0
 let potato_stages: Image[] = []
 let DEBUG_menu = false
 let DEBUG_tilemap = false
-DEBUG_tilemap = true
-DEBUG_menu = true
+DEBUG_tilemap = false
+DEBUG_menu = false
 stats.turnStats(true)
 color.setPalette(
 color.Black
@@ -1258,7 +1259,7 @@ beetroot_stages[beetroot_stages.length - 1],
 lettuce_stages[lettuce_stages.length - 1]
 ]
 degradation_path = [assets.tile`wet_dirt`, sprites.castle.tilePath5, assets.tile`grass`]
-degradation_chances = [20, 30, 0]
+degradation_chances = [1, 1, 0]
 make_player()
 load_environment_outside()
 make_inventory_toolbar()
@@ -1269,16 +1270,22 @@ money_goal = 500
 make_money_label()
 give_starting_items()
 controller.configureRepeatEventDefaults(333, 50)
-time_speed_multiplier = 240 * 1
+time_speed_multiplier = 60 * 1
 timer.background(function () {
     while (true) {
         secs_left_in_day = 86400 - 8 * 3600
         secs_elapsed_today = 8 * 3600
+        last_hour = secs_elapsed_today
         on_day_start()
         while (secs_elapsed_today <= 86400 - 5 * 3600) {
+            if (secs_elapsed_today - last_hour > 3600) {
+                last_hour = secs_elapsed_today
+                tick_time()
+            }
             pause(0)
         }
         on_1_hour_before_day_end()
+        tick_time()
         while (secs_elapsed_today <= 86400 - 4 * 3600) {
             pause(0)
         }
