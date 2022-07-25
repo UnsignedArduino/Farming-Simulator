@@ -253,24 +253,14 @@ function open_action_menu () {
     }
     in_menu = true
     menu_house = miniMenu.createMenu(
-    miniMenu.createMenuItem("Close")
+    miniMenu.createMenuItem("Close"),
+    miniMenu.createMenuItem("Sell...")
     )
     menu_house.setFlag(SpriteFlag.RelativeToCamera, true)
     menu_house.top = 4
     menu_house.left = 4
     menu_house.z = 20
-    menu_house.setDimensions(scene.screenWidth() - 8, scene.screenHeight() - 32)
-    menu_house.setTitle("Actions available:")
-    menu_house.setMenuStyleProperty(miniMenu.MenuStyleProperty.Border, 1)
-    menu_house.setMenuStyleProperty(miniMenu.MenuStyleProperty.BorderColor, images.colorBlock(12))
-    menu_house.setMenuStyleProperty(miniMenu.MenuStyleProperty.BackgroundColor, images.colorBlock(13))
-    menu_house.setMenuStyleProperty(miniMenu.MenuStyleProperty.ScrollIndicatorColor, images.colorBlock(12))
-    menu_house.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Foreground, images.colorBlock(12))
-    menu_house.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Background, images.colorBlock(13))
-    menu_house.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
-    menu_house.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, images.colorBlock(11))
-    menu_house.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
-    menu_house.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Background, images.colorBlock(12))
+    style_menu([menu_house], scene.screenWidth() - 8, scene.screenHeight() - 32, "Actions available:")
     menu_house.setButtonEventsEnabled(false)
     menu_house.onButtonPressed(controller.A, function (selection, selectedIndex) {
         if (selectedIndex == 0) {
@@ -396,6 +386,20 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         move_left_in_inventory_toolbar()
     }
 })
+function style_menu (menu_in_list: any[], width: number, height: number, title: string) {
+    menu_in_list[0].setDimensions(width, height)
+    menu_in_list[0].setTitle(title)
+    menu_in_list[0].setMenuStyleProperty(miniMenu.MenuStyleProperty.Border, 1)
+    menu_in_list[0].setMenuStyleProperty(miniMenu.MenuStyleProperty.BorderColor, images.colorBlock(12))
+    menu_in_list[0].setMenuStyleProperty(miniMenu.MenuStyleProperty.BackgroundColor, images.colorBlock(13))
+    menu_in_list[0].setMenuStyleProperty(miniMenu.MenuStyleProperty.ScrollIndicatorColor, images.colorBlock(12))
+    menu_in_list[0].setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Foreground, images.colorBlock(12))
+    menu_in_list[0].setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Background, images.colorBlock(13))
+    menu_in_list[0].setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
+    menu_in_list[0].setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, images.colorBlock(11))
+    menu_in_list[0].setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
+    menu_in_list[0].setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Background, images.colorBlock(12))
+}
 function give_starting_items () {
     inventory.get_items().push(Inventory.create_item("Pickaxe", assets.image`pickaxe_1`))
     inventory.get_items().push(Inventory.create_item("Axe", assets.image`axe`))
@@ -475,18 +479,7 @@ function open_debug_menu () {
     menu_debug.top = 4
     menu_debug.left = 4
     menu_debug.z = 20
-    menu_debug.setDimensions(scene.screenWidth() - 8, scene.screenHeight() - 32)
-    menu_debug.setTitle("Debug menu")
-    menu_debug.setMenuStyleProperty(miniMenu.MenuStyleProperty.Border, 1)
-    menu_debug.setMenuStyleProperty(miniMenu.MenuStyleProperty.BorderColor, images.colorBlock(12))
-    menu_debug.setMenuStyleProperty(miniMenu.MenuStyleProperty.BackgroundColor, images.colorBlock(13))
-    menu_debug.setMenuStyleProperty(miniMenu.MenuStyleProperty.ScrollIndicatorColor, images.colorBlock(12))
-    menu_debug.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Foreground, images.colorBlock(12))
-    menu_debug.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Background, images.colorBlock(13))
-    menu_debug.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
-    menu_debug.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, images.colorBlock(11))
-    menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
-    menu_debug.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Background, images.colorBlock(12))
+    style_menu([menu_debug], scene.screenWidth() - 8, scene.screenHeight() - 32, "Debug menu")
     menu_debug.setButtonEventsEnabled(false)
     menu_debug.onButtonPressed(controller.A, function (selection, selectedIndex) {
         if (selectedIndex == 0) {
