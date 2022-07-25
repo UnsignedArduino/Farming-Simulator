@@ -352,6 +352,7 @@ function open_sell_menu () {
             }
         }
     }
+    sell_price = 0
     real_index = 0
     for (let index = 0; index <= inventory.get_items().length - 1; index++) {
         item = inventory.get_items()[index]
@@ -365,6 +366,7 @@ function open_sell_menu () {
             } else {
                 menu_sell_options.push(miniMenu.createMenuItem("" + menu_sell_selections[real_index] + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
             }
+            sell_price += menu_sell_selections[real_index] * parseFloat(item.get_text(ItemTextAttribute.Description))
             real_index += 1
         }
     }
@@ -381,10 +383,11 @@ function open_sell_menu () {
             } else {
                 menu_sell_options.push(miniMenu.createMenuItem("" + menu_sell_selections[real_index] + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
             }
+            sell_price += menu_sell_selections[real_index] * parseFloat(item.get_text(ItemTextAttribute.Description))
             real_index += 1
         }
     }
-    menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $" + "0"))
+    menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $" + sell_price))
     menu_sell = miniMenu.createMenuFromArray(menu_sell_options)
     for (let index = 0; index < menu_sell_last_index; index++) {
         menu_sell.moveSelection(miniMenu.MoveDirection.Down)
@@ -432,6 +435,16 @@ function open_sell_menu () {
                 menu_sell.destroy()
                 open_sell_menu()
             }
+        }
+    })
+    menu_sell.onButtonPressed(controller.menu, function (selection, selectedIndex) {
+        if (selectedIndex == 0 || selectedIndex == 1) {
+        	
+        } else {
+            menu_sell_selections[selectedIndex - 2] = menu_sell_selections_max[selectedIndex - 2]
+            menu_sell_last_index = selectedIndex
+            menu_sell.destroy()
+            open_sell_menu()
         }
     })
     timer.background(function () {
@@ -841,7 +854,13 @@ function screen_shade (amount: number) {
     screen_shader.setPosition(scene.screenWidth() / 2, scene.screenHeight() / 2)
 }
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
-    handle_menu_key_in_inventory_toolbar()
+    if (in_inventory) {
+        handle_menu_key_in_inventory_toolbar()
+    } else if (in_menu) {
+    	
+    } else {
+        handle_menu_key_in_inventory_toolbar()
+    }
 })
 controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
@@ -1074,6 +1093,7 @@ let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
 let menu_sell_last_index = 0
 let real_index = 0
+let sell_price = 0
 let description = ""
 let menu_sell_selections_max: number[] = []
 let menu_sell_selections: number[] = []
