@@ -311,6 +311,19 @@ function give_player_seed_of (name: string) {
         add_item([Inventory.create_item("Lettuce seed", assets.image`lettuce_seed`, "0.2,sellable,")])
     }
 }
+function make_money_label () {
+    if (DEBUG_tilemap || DEBUG_menu) {
+        money_label = textsprite.create("$0", 1, 2)
+        money_label.setBorder(1, 2, 1)
+    } else {
+        money_label = textsprite.create("$0", 13, 12)
+        money_label.setBorder(1, 12, 1)
+    }
+    money_label.setFlag(SpriteFlag.RelativeToCamera, true)
+    money_label.z = 20
+    money_label.top = 4
+    money_label.left = 4
+}
 function open_sell_menu () {
     enable_movement(false)
     if (!(spriteutils.isDestroyed(menu_sell))) {
@@ -827,6 +840,9 @@ function tick_plant (stages: any[], percent_chance: number) {
         }
     }
 }
+function update_money_label () {
+    money_label.setText("$" + money + "/" + money_goal)
+}
 controller.down.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
         move_down_in_inventory_toolbar()
@@ -1116,6 +1132,7 @@ let menu_sell_selections_max: number[] = []
 let menu_sell_selections: number[] = []
 let menu_sell_options: miniMenu.MenuItem[] = []
 let menu_sell: miniMenu.MenuSprite = null
+let money_label: TextSprite = null
 let menu_house: miniMenu.MenuSprite = null
 let inventory: Inventory.Inventory = null
 let action_label: TextSprite = null
@@ -1133,6 +1150,8 @@ let item: Inventory.Item = null
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
+let money_goal = 0
+let money = 0
 let degradation_chances: number[] = []
 let degradation_path: Image[] = []
 let fully_grown_tiles: Image[] = []
@@ -1207,6 +1226,9 @@ load_environment_outside()
 make_inventory_toolbar()
 make_tile_cursor_and_action_label()
 make_time_label()
+money = 0
+money_goal = 500
+make_money_label()
 give_starting_items()
 controller.configureRepeatEventDefaults(333, 50)
 time_speed_multiplier = 240 * 1
@@ -1230,4 +1252,5 @@ game.onUpdate(function () {
     the_player.z = the_player.bottom / 100
     update_tile_cursor_and_action_label()
     update_time()
+    update_money_label()
 })
