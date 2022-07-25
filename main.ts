@@ -158,6 +158,7 @@ function make_time_label () {
     last_time = game.runtime()
     secs_left_in_day = 86400 - 8 * 3600
     secs_elapsed_today = 0
+    day_of_the_week = 0
     update_time()
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -397,6 +398,11 @@ function open_sell_menu () {
             open_action_menu()
         } else if (selectedIndex == 1) {
             money += sell_price
+            if (money >= money_goal) {
+                timer.after(100, function () {
+                    game.over(true)
+                })
+            }
             real_index = 0
             indices_to_remove = []
             index_remove_counts = []
@@ -761,7 +767,7 @@ function update_time () {
         secs_left_in_day = 86400 - Math.abs(secs_left_in_day)
     }
     secs_elapsed_today = 86400 - secs_left_in_day
-    time_label.setText(format_time(secs_elapsed_today))
+    time_label.setText("" + index_to_short_day_of_week(day_of_the_week) + " " + format_time(secs_elapsed_today))
     time_label.right = scene.screenWidth() - 4
 }
 function handle_a_key_in_inventory_toolbar () {
@@ -843,6 +849,18 @@ controller.down.onEvent(ControllerButtonEvent.Repeated, function () {
         move_down_in_inventory_toolbar()
     }
 })
+function index_to_short_day_of_week (idx: number) {
+    days_of_week_names = [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+    ]
+    return days_of_week_names[idx % days_of_week_names.length]
+}
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_inventory) {
         move_down_in_inventory_toolbar()
@@ -911,6 +929,14 @@ function same_locations (locs_in_list: any[]) {
         }
     }
     return true
+}
+function on_day_end_of_last_day () {
+    enable_movement(false)
+    screen_shade(shader.ShadeLevel.Two)
+    scene.followPath(the_player, scene.aStar(the_player.tilemapLocation(), tiles.getTilesByType(assets.tile`house`)[0]), 40)
+    while (scene.spriteIsFollowingPath(the_player)) {
+        pause(0)
+    }
 }
 function set_stackable_item_count_name (name: string, _new: number) {
     item = get_stackable_item_name(name)
@@ -1125,6 +1151,7 @@ let last_toolbar_select = 0
 let row = 0
 let col = 0
 let screen_shader: Sprite = null
+let days_of_week_names: string[] = []
 let label = ""
 let menu_debug: miniMenu.MenuSprite = null
 let cursor_in_inventory = false
@@ -1157,6 +1184,7 @@ let the_player: Sprite = null
 let in_inventory = false
 let the_cursor: Sprite = null
 let item: Inventory.Item = null
+let day_of_the_week = 0
 let secs_elapsed_today = 0
 let secs_left_in_day = 0
 let time_speed_multiplier = 0
@@ -1254,7 +1282,14 @@ timer.background(function () {
         while (secs_elapsed_today <= 86400 - 4 * 3600) {
             pause(0)
         }
-        on_day_end()
+        if (day_of_the_week == 4) {
+            on_day_end_of_last_day()
+            pause(2000)
+            game.over(false)
+        } else {
+            on_day_end()
+        }
+        day_of_the_week += 1
         pause(2000)
     }
 })
