@@ -260,7 +260,7 @@ function open_action_menu () {
     menu_house.top = 4
     menu_house.left = 4
     menu_house.z = 20
-    style_menu([menu_house], scene.screenWidth() - 8, scene.screenHeight() - 32, "Actions available:")
+    style_menu([menu_house], scene.screenWidth() - 8, scene.screenHeight() - 32, "Actions available")
     menu_house.setButtonEventsEnabled(false)
     menu_house.onButtonPressed(controller.A, function (selection, selectedIndex) {
         if (selectedIndex == 0) {
@@ -268,6 +268,9 @@ function open_action_menu () {
             enable_movement(true)
             in_menu = false
             the_player.y += 16
+        } else if (selectedIndex == 1) {
+            menu_house.destroy()
+            open_sell_menu()
         }
     })
     menu_house.onButtonPressed(controller.B, function (selection, selectedIndex) {
@@ -307,6 +310,38 @@ function give_player_seed_of (name: string) {
     } else if (name == "lettuce") {
         add_item([Inventory.create_item("Lettuce seed", assets.image`lettuce_seed`)])
     }
+}
+function open_sell_menu () {
+    enable_movement(false)
+    if (!(spriteutils.isDestroyed(menu_sell))) {
+        menu_house.destroy()
+    }
+    in_menu = true
+    menu_sell = miniMenu.createMenu(
+    miniMenu.createMenuItem("Close")
+    )
+    menu_sell.setFlag(SpriteFlag.RelativeToCamera, true)
+    menu_sell.top = 4
+    menu_sell.left = 4
+    menu_sell.z = 20
+    style_menu([menu_sell], scene.screenWidth() - 8, scene.screenHeight() - 32, "Sell vegetables")
+    menu_sell.setButtonEventsEnabled(false)
+    menu_sell.onButtonPressed(controller.A, function (selection, selectedIndex) {
+        if (selectedIndex == 0) {
+            menu_sell.destroy()
+            open_action_menu()
+        }
+    })
+    menu_sell.onButtonPressed(controller.B, function (selection, selectedIndex) {
+        menu_sell.destroy()
+        open_action_menu()
+    })
+    timer.background(function () {
+        while (controller.A.isPressed()) {
+            pause(0)
+        }
+        menu_sell.setButtonEventsEnabled(true)
+    })
 }
 function change_stackable_item_count_name (name: string, by: number) {
     item = get_stackable_item_name(name)
@@ -939,6 +974,7 @@ let the_decoration: Sprite = null
 let seed_rng: FastRandomBlocks = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
+let menu_sell: miniMenu.MenuSprite = null
 let menu_house: miniMenu.MenuSprite = null
 let inventory: Inventory.Inventory = null
 let action_label: TextSprite = null
