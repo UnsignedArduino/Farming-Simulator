@@ -254,7 +254,7 @@ function open_action_menu () {
     in_menu = true
     menu_house = miniMenu.createMenu(
     miniMenu.createMenuItem("Close"),
-    miniMenu.createMenuItem("Sell...")
+    miniMenu.createMenuItem("Sell from inventory...")
     )
     menu_house.setFlag(SpriteFlag.RelativeToCamera, true)
     menu_house.top = 4
@@ -349,43 +349,11 @@ function open_sell_menu () {
                 }
             }
         }
-        for (let index = 0; index <= toolbar.get_items().length - 1; index++) {
-            item = toolbar.get_items()[index]
-            description = item.get_text(ItemTextAttribute.Description)
-            if (!(description)) {
-                continue;
-            }
-            if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
-                menu_sell_selections.push(0)
-                if (item.get_text(ItemTextAttribute.Tooltip) == "") {
-                    menu_sell_selections_max.push(1)
-                } else {
-                    menu_sell_selections_max.push(parseFloat(item.get_text(ItemTextAttribute.Tooltip)))
-                }
-            }
-        }
     }
     sell_price = 0
     real_index = 0
     for (let index = 0; index <= inventory.get_items().length - 1; index++) {
         item = inventory.get_items()[index]
-        description = item.get_text(ItemTextAttribute.Description)
-        if (!(description)) {
-            continue;
-        }
-        if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
-            if (item.get_text(ItemTextAttribute.Tooltip) == "") {
-                menu_sell_options.push(miniMenu.createMenuItem("" + menu_sell_selections[real_index] + "/" + "1" + ": " + item.get_text(ItemTextAttribute.Name)))
-            } else {
-                menu_sell_options.push(miniMenu.createMenuItem("" + menu_sell_selections[real_index] + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
-            }
-            sell_price += menu_sell_selections[real_index] * parseFloat(item.get_text(ItemTextAttribute.Description))
-            real_index += 1
-        }
-    }
-    real_index = 0
-    for (let index = 0; index <= toolbar.get_items().length - 1; index++) {
-        item = toolbar.get_items()[index]
         description = item.get_text(ItemTextAttribute.Description)
         if (!(description)) {
             continue;
@@ -409,9 +377,11 @@ function open_sell_menu () {
         menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $" + sell_price))
     }
     menu_sell = miniMenu.createMenuFromArray(menu_sell_options)
+    menu_sell.setMenuStyleProperty(miniMenu.MenuStyleProperty.ScrollSpeed, 10000)
     for (let index = 0; index < menu_sell_last_index; index++) {
         menu_sell.moveSelection(miniMenu.MoveDirection.Down)
     }
+    menu_sell.setMenuStyleProperty(miniMenu.MenuStyleProperty.ScrollSpeed, 150)
     menu_sell.setFlag(SpriteFlag.RelativeToCamera, true)
     menu_sell.top = 4
     menu_sell.left = 4
@@ -429,6 +399,7 @@ function open_sell_menu () {
             menu_sell_selections = []
             menu_sell_selections_max = []
             menu_sell.destroy()
+            money += sell_price
             enable_movement(true)
             in_menu = false
             the_player.y += 16
@@ -841,7 +812,13 @@ function tick_plant (stages: any[], percent_chance: number) {
     }
 }
 function update_money_label () {
-    money_label.setText("$" + money + "/" + money_goal)
+    if (money == 0) {
+        money_label.setText("$0/" + money_goal)
+    } else if (money * 100 % 10 == 0) {
+        money_label.setText("$" + money + "0/" + money_goal)
+    } else {
+        money_label.setText("$" + money + "/" + money_goal)
+    }
 }
 controller.down.onEvent(ControllerButtonEvent.Repeated, function () {
     if (in_inventory) {
