@@ -396,10 +396,28 @@ function open_sell_menu () {
             menu_sell.destroy()
             open_action_menu()
         } else if (selectedIndex == 1) {
+            money += sell_price
+            real_index = 0
+            indices_to_remove = []
+            index_remove_counts = []
+            for (let index = 0; index <= inventory.get_items().length - 1; index++) {
+                item = inventory.get_items()[index]
+                description = item.get_text(ItemTextAttribute.Description)
+                if (!(description)) {
+                    continue;
+                }
+                if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
+                    indices_to_remove.push(index)
+                    index_remove_counts.push(menu_sell_selections[real_index])
+                    real_index += 1
+                }
+            }
+            while (indices_to_remove.length > 0) {
+                change_stackable_item_count_inventory_index(indices_to_remove.pop(), index_remove_counts.pop() * -1)
+            }
             menu_sell_selections = []
             menu_sell_selections_max = []
             menu_sell.destroy()
-            money += sell_price
             enable_movement(true)
             in_menu = false
             the_player.y += 16
@@ -911,6 +929,19 @@ function get_watering_can_fill () {
 function get_stackable_item_count () {
     return parseFloat(toolbar.get_items()[toolbar.get_number(ToolbarNumberAttribute.SelectedIndex)].get_text(ItemTextAttribute.Tooltip))
 }
+function change_stackable_item_count_inventory_index (idx: number, by: number) {
+    item = inventory.get_items()[idx]
+    if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+        item.set_text(ItemTextAttribute.Tooltip, "1")
+    }
+    item.set_text(ItemTextAttribute.Tooltip, "" + (parseFloat(item.get_text(ItemTextAttribute.Tooltip)) + by))
+    if (item.get_text(ItemTextAttribute.Tooltip) == "1") {
+        item.set_text(ItemTextAttribute.Tooltip, "")
+    } else if (item.get_text(ItemTextAttribute.Tooltip) == "0") {
+        inventory.get_items().removeAt(idx)
+    }
+    inventory.update()
+}
 function handle_menu_key_in_inventory_toolbar () {
     in_inventory = !(in_inventory)
     inventory.setFlag(SpriteFlag.Invisible, !(in_inventory))
@@ -1101,6 +1132,8 @@ let the_decoration: Sprite = null
 let seed_rng: FastRandomBlocks = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
+let index_remove_counts: number[] = []
+let indices_to_remove: number[] = []
 let menu_sell_last_index = 0
 let real_index = 0
 let sell_price = 0
