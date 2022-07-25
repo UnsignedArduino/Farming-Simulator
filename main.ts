@@ -3,8 +3,8 @@ namespace SpriteKind {
     export const Decoration = SpriteKind.create()
     export const TileCursor = SpriteKind.create()
 }
-function create_item_with_tooltip (name: string, image2: Image, tooltip: string) {
-    item = Inventory.create_item(name, image2)
+function create_item_with_tooltip (name: string, image2: Image, description: string, tooltip: string) {
+    item = Inventory.create_item(name, image2, description)
     item.set_text(ItemTextAttribute.Tooltip, tooltip)
     return item
 }
@@ -302,24 +302,50 @@ function animate_sprite (sprite: Sprite, _static: Image, static_condition: numbe
 }
 function give_player_seed_of (name: string) {
     if (name == "potato") {
-        add_item([Inventory.create_item("Potato", assets.image`potato`)])
+        add_item([Inventory.create_item("Potato", assets.image`potato`, "0.25,sellable,")])
     } else if (name == "carrot") {
-        add_item([Inventory.create_item("Carrot seed", assets.image`carrot_seed`)])
+        add_item([Inventory.create_item("Carrot seed", assets.image`carrot_seed`, "0.1,sellable,")])
     } else if (name == "beetroot") {
-        add_item([Inventory.create_item("Beetroot seed", assets.image`beetroot_seed`)])
+        add_item([Inventory.create_item("Beetroot seed", assets.image`beetroot_seed`, "0.15,sellable,")])
     } else if (name == "lettuce") {
-        add_item([Inventory.create_item("Lettuce seed", assets.image`lettuce_seed`)])
+        add_item([Inventory.create_item("Lettuce seed", assets.image`lettuce_seed`, "0.2,sellable,")])
     }
 }
 function open_sell_menu () {
     enable_movement(false)
     if (!(spriteutils.isDestroyed(menu_sell))) {
-        menu_house.destroy()
+        menu_sell.destroy()
     }
     in_menu = true
-    menu_sell = miniMenu.createMenu(
-    miniMenu.createMenuItem("Close")
-    )
+    menu_sell_options = [miniMenu.createMenuItem("Close")]
+    for (let item of inventory.get_items()) {
+        description = item.get_text(ItemTextAttribute.Description)
+        if (!(description)) {
+            continue;
+        }
+        if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
+            if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+                menu_sell_options.push(miniMenu.createMenuItem("0" + "/" + "1" + ": " + item.get_text(ItemTextAttribute.Name)))
+            } else {
+                menu_sell_options.push(miniMenu.createMenuItem("0" + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
+            }
+        }
+    }
+    for (let item of toolbar.get_items()) {
+        description = item.get_text(ItemTextAttribute.Description)
+        if (!(description)) {
+            continue;
+        }
+        if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
+            if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+                menu_sell_options.push(miniMenu.createMenuItem("0" + "/" + "1" + ": " + item.get_text(ItemTextAttribute.Name)))
+            } else {
+                menu_sell_options.push(miniMenu.createMenuItem("0" + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
+            }
+        }
+    }
+    menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $" + "0"))
+    menu_sell = miniMenu.createMenuFromArray(menu_sell_options)
     menu_sell.setFlag(SpriteFlag.RelativeToCamera, true)
     menu_sell.top = 4
     menu_sell.left = 4
@@ -440,12 +466,12 @@ function give_starting_items () {
     inventory.get_items().push(Inventory.create_item("Axe", assets.image`axe`))
     inventory.get_items().push(Inventory.create_item("Shovel", assets.image`shovel`))
     inventory.get_items().push(Inventory.create_item("Hoe", assets.image`hoe`))
-    inventory.get_items().push(create_item_with_tooltip("Watering can", assets.image`watering_can`, "0%"))
+    inventory.get_items().push(create_item_with_tooltip("Watering can", assets.image`watering_can`, "", "0%"))
     seed_rng = Random.createRNG(3)
-    inventory.get_items().push(create_item_with_tooltip("Potato", assets.image`potato`, "" + seed_rng.randomRange(5, 10)))
-    inventory.get_items().push(create_item_with_tooltip("Carrot seed", assets.image`carrot_seed`, "" + seed_rng.randomRange(5, 10)))
-    inventory.get_items().push(create_item_with_tooltip("Beetroot seed", assets.image`beetroot_seed`, "" + seed_rng.randomRange(5, 10)))
-    inventory.get_items().push(create_item_with_tooltip("Lettuce seed", assets.image`lettuce_seed`, "" + seed_rng.randomRange(5, 10)))
+    inventory.get_items().push(create_item_with_tooltip("Potato", assets.image`potato`, "0.25,sellable,", "" + seed_rng.randomRange(5, 10)))
+    inventory.get_items().push(create_item_with_tooltip("Carrot seed", assets.image`carrot_seed`, "0.1,sellable,", "" + seed_rng.randomRange(5, 10)))
+    inventory.get_items().push(create_item_with_tooltip("Beetroot seed", assets.image`beetroot_seed`, "0.15,sellable,", "" + seed_rng.randomRange(5, 10)))
+    inventory.get_items().push(create_item_with_tooltip("Lettuce seed", assets.image`lettuce_seed`, "0.2,sellable,", "" + seed_rng.randomRange(5, 10)))
     inventory.update()
     if (DEBUG_menu) {
         toolbar.get_items().push(Inventory.create_item("Debug menu", assets.image`popup_debug_menu`))
@@ -671,13 +697,13 @@ function change_watering_can_fill (by: number) {
 }
 function give_player_crop_of (name: string) {
     if (name == "potato") {
-        add_item([Inventory.create_item("Potato", assets.image`potato`)])
+        add_item([Inventory.create_item("Potato", assets.image`potato`, "0.25,sellable,")])
     } else if (name == "carrot") {
-        add_item([Inventory.create_item("Carrot", assets.image`carrot`)])
+        add_item([Inventory.create_item("Carrot", assets.image`carrot`, "0.2,sellable,")])
     } else if (name == "beetroot") {
-        add_item([Inventory.create_item("Beetroot", assets.image`beetroot`)])
+        add_item([Inventory.create_item("Beetroot", assets.image`beetroot`, "0.3,sellable,")])
     } else if (name == "lettuce") {
-        add_item([Inventory.create_item("Lettuce", assets.image`lettuce`)])
+        add_item([Inventory.create_item("Lettuce", assets.image`lettuce`, "1,sellable,")])
     }
 }
 function tick_plant (stages: any[], percent_chance: number) {
@@ -974,6 +1000,8 @@ let the_decoration: Sprite = null
 let seed_rng: FastRandomBlocks = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
+let description = ""
+let menu_sell_options: miniMenu.MenuItem[] = []
 let menu_sell: miniMenu.MenuSprite = null
 let menu_house: miniMenu.MenuSprite = null
 let inventory: Inventory.Inventory = null
