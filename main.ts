@@ -318,34 +318,77 @@ function open_sell_menu () {
     }
     in_menu = true
     menu_sell_options = [miniMenu.createMenuItem("Close")]
-    for (let item of inventory.get_items()) {
-        description = item.get_text(ItemTextAttribute.Description)
-        if (!(description)) {
-            continue;
+    if (menu_sell_selections.length == 0) {
+        menu_sell_selections = []
+        menu_sell_selections_max = []
+        for (let index = 0; index <= inventory.get_items().length - 1; index++) {
+            item = inventory.get_items()[index]
+            description = item.get_text(ItemTextAttribute.Description)
+            if (!(description)) {
+                continue;
+            }
+            if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
+                menu_sell_selections.push(0)
+                if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+                    menu_sell_selections_max.push(1)
+                } else {
+                    menu_sell_selections_max.push(parseFloat(item.get_text(ItemTextAttribute.Tooltip)))
+                }
+            }
         }
-        if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
-            if (item.get_text(ItemTextAttribute.Tooltip) == "") {
-                menu_sell_options.push(miniMenu.createMenuItem("0" + "/" + "1" + ": " + item.get_text(ItemTextAttribute.Name)))
-            } else {
-                menu_sell_options.push(miniMenu.createMenuItem("0" + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
+        for (let index = 0; index <= toolbar.get_items().length - 1; index++) {
+            item = toolbar.get_items()[index]
+            description = item.get_text(ItemTextAttribute.Description)
+            if (!(description)) {
+                continue;
+            }
+            if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
+                menu_sell_selections.push(0)
+                if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+                    menu_sell_selections_max.push(1)
+                } else {
+                    menu_sell_selections_max.push(parseFloat(item.get_text(ItemTextAttribute.Tooltip)))
+                }
             }
         }
     }
-    for (let item of toolbar.get_items()) {
+    real_index = 0
+    for (let index = 0; index <= inventory.get_items().length - 1; index++) {
+        item = inventory.get_items()[index]
         description = item.get_text(ItemTextAttribute.Description)
         if (!(description)) {
             continue;
         }
         if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
             if (item.get_text(ItemTextAttribute.Tooltip) == "") {
-                menu_sell_options.push(miniMenu.createMenuItem("0" + "/" + "1" + ": " + item.get_text(ItemTextAttribute.Name)))
+                menu_sell_options.push(miniMenu.createMenuItem("" + menu_sell_selections[real_index] + "/" + "1" + ": " + item.get_text(ItemTextAttribute.Name)))
             } else {
-                menu_sell_options.push(miniMenu.createMenuItem("0" + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
+                menu_sell_options.push(miniMenu.createMenuItem("" + menu_sell_selections[real_index] + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
             }
+            real_index += 1
+        }
+    }
+    real_index = 0
+    for (let index = 0; index <= toolbar.get_items().length - 1; index++) {
+        item = toolbar.get_items()[index]
+        description = item.get_text(ItemTextAttribute.Description)
+        if (!(description)) {
+            continue;
+        }
+        if (item.get_text(ItemTextAttribute.Description).includes("sellable")) {
+            if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+                menu_sell_options.push(miniMenu.createMenuItem("" + menu_sell_selections[real_index] + "/" + "1" + ": " + item.get_text(ItemTextAttribute.Name)))
+            } else {
+                menu_sell_options.push(miniMenu.createMenuItem("" + menu_sell_selections[real_index] + "/" + item.get_text(ItemTextAttribute.Tooltip) + ": " + item.get_text(ItemTextAttribute.Name)))
+            }
+            real_index += 1
         }
     }
     menu_sell_options.insertAt(1, miniMenu.createMenuItem("Sell for $" + "0"))
     menu_sell = miniMenu.createMenuFromArray(menu_sell_options)
+    for (let index = 0; index < menu_sell_last_index; index++) {
+        menu_sell.moveSelection(miniMenu.MoveDirection.Down)
+    }
     menu_sell.setFlag(SpriteFlag.RelativeToCamera, true)
     menu_sell.top = 4
     menu_sell.left = 4
@@ -354,13 +397,33 @@ function open_sell_menu () {
     menu_sell.setButtonEventsEnabled(false)
     menu_sell.onButtonPressed(controller.A, function (selection, selectedIndex) {
         if (selectedIndex == 0) {
+            menu_sell_last_index = 0
             menu_sell.destroy()
             open_action_menu()
+        } else if (selectedIndex == 1) {
+        	
+        } else {
+            if (menu_sell_selections[selectedIndex - 2] < menu_sell_selections_max[selectedIndex - 2]) {
+                menu_sell_selections[selectedIndex - 2] = menu_sell_selections[selectedIndex - 2] + 1
+                menu_sell_last_index = selectedIndex
+                menu_sell.destroy()
+                open_sell_menu()
+            }
         }
     })
     menu_sell.onButtonPressed(controller.B, function (selection, selectedIndex) {
-        menu_sell.destroy()
-        open_action_menu()
+        if (selectedIndex == 0 || selectedIndex == 1) {
+            menu_sell_last_index = 0
+            menu_sell.destroy()
+            open_action_menu()
+        } else {
+            if (menu_sell_selections[selectedIndex - 2] > 0) {
+                menu_sell_selections[selectedIndex - 2] = menu_sell_selections[selectedIndex - 2] - 1
+                menu_sell_last_index = selectedIndex
+                menu_sell.destroy()
+                open_sell_menu()
+            }
+        }
     })
     timer.background(function () {
         while (controller.A.isPressed()) {
@@ -1000,7 +1063,11 @@ let the_decoration: Sprite = null
 let seed_rng: FastRandomBlocks = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
+let menu_sell_last_index = 0
+let real_index = 0
 let description = ""
+let menu_sell_selections_max: number[] = []
+let menu_sell_selections: number[] = []
 let menu_sell_options: miniMenu.MenuItem[] = []
 let menu_sell: miniMenu.MenuSprite = null
 let menu_house: miniMenu.MenuSprite = null
