@@ -169,6 +169,15 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         handle_b_key_in_inventory_toolbar()
     }
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`house`, function (sprite, location) {
+    if (sprite.tileKindAt(TileDirection.Center, assets.tile`house`)) {
+        if (!(in_cutscene)) {
+            if (!(in_menu) && !(in_inventory)) {
+                open_action_menu()
+            }
+        }
+    }
+})
 function remove_item_from_toolbar (index: number) {
     item = toolbar.get_items()[index]
     if (!(item)) {
@@ -237,6 +246,53 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         do_action()
     }
 })
+function open_action_menu () {
+    enable_movement(false)
+    if (!(spriteutils.isDestroyed(menu_house))) {
+        menu_house.destroy()
+    }
+    in_menu = true
+    menu_house = miniMenu.createMenu(
+    miniMenu.createMenuItem("Close")
+    )
+    menu_house.setFlag(SpriteFlag.RelativeToCamera, true)
+    menu_house.top = 4
+    menu_house.left = 4
+    menu_house.z = 20
+    menu_house.setDimensions(scene.screenWidth() - 8, scene.screenHeight() - 32)
+    menu_house.setTitle("Actions available:")
+    menu_house.setMenuStyleProperty(miniMenu.MenuStyleProperty.Border, 1)
+    menu_house.setMenuStyleProperty(miniMenu.MenuStyleProperty.BorderColor, images.colorBlock(12))
+    menu_house.setMenuStyleProperty(miniMenu.MenuStyleProperty.BackgroundColor, images.colorBlock(13))
+    menu_house.setMenuStyleProperty(miniMenu.MenuStyleProperty.ScrollIndicatorColor, images.colorBlock(12))
+    menu_house.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Foreground, images.colorBlock(12))
+    menu_house.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Background, images.colorBlock(13))
+    menu_house.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
+    menu_house.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, images.colorBlock(11))
+    menu_house.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Foreground, images.colorBlock(13))
+    menu_house.setStyleProperty(miniMenu.StyleKind.Title, miniMenu.StyleProperty.Background, images.colorBlock(12))
+    menu_house.setButtonEventsEnabled(false)
+    menu_house.onButtonPressed(controller.A, function (selection, selectedIndex) {
+        if (selectedIndex == 0) {
+            menu_house.destroy()
+            enable_movement(true)
+            in_menu = false
+            the_player.y += 16
+        }
+    })
+    menu_house.onButtonPressed(controller.B, function (selection, selectedIndex) {
+        menu_house.destroy()
+        enable_movement(true)
+        in_menu = false
+        the_player.y += 16
+    })
+    timer.background(function () {
+        while (controller.A.isPressed()) {
+            pause(0)
+        }
+        menu_house.setButtonEventsEnabled(true)
+    })
+}
 function animate_sprite (sprite: Sprite, _static: Image, static_condition: number, animation2: any[], animation_condition: number) {
     characterAnimations.loopFrames(
     sprite,
@@ -388,6 +444,7 @@ function move_down_in_inventory_toolbar () {
     }
 }
 function enable_movement (en: boolean) {
+    in_cutscene = !(en)
     if (en) {
         controller.moveSprite(the_player, 80, 80)
     } else {
@@ -845,7 +902,7 @@ function format_time (secs_elapsed: number) {
 }
 function on_day_start () {
     tiles.placeOnTile(the_player, tiles.getTilesByType(assets.tile`house`)[0])
-    the_player.y += 1
+    the_player.y += 8
     characterAnimations.setCharacterState(the_player, characterAnimations.rule(Predicate.FacingDown, Predicate.NotMoving))
     timer.background(function () {
         while (!(controller.anyButton.isPressed())) {
@@ -889,8 +946,10 @@ let the_decoration: Sprite = null
 let seed_rng: FastRandomBlocks = null
 let rng_ground: FastRandomBlocks = null
 let the_house: Sprite = null
+let menu_house: miniMenu.MenuSprite = null
 let inventory: Inventory.Inventory = null
 let action_label: TextSprite = null
+let in_cutscene = false
 let in_menu = false
 let last_time = 0
 let time_label: TextSprite = null
